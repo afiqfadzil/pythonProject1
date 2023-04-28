@@ -1,20 +1,17 @@
 # This is a sample Python script.
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.utils import platform
 from kivymd.app import MDApp
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.core.window import Window
 from kivy.config import Config
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 Builder.load_file('mainscreen.kv')
-Config.set('graphics', 'resizable', False)
 class LoginScreen(Widget):
+
     pass
     '''  def __init__(self, **kwargs):
        super(LoginScreen,self).__init__(**kwargs)
@@ -39,6 +36,7 @@ class LoginScreen(Widget):
 
 class Main(App):
     def build(self):
+        Window.size = (620, 1024)
         return LoginScreen()
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
