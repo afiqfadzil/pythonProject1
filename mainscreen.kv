@@ -1,0 +1,39 @@
+<LoginScreen>
+    FloatLayout:
+
+        cols:1
+
+        FloatLayout:
+            cols : 2
+            size : (1080,1920)
+            Label:
+                text : "Address : "
+                size_hint : .1,.02
+                pos : 200,700
+            TextInput:
+                multiline:False
+                size_hint : .5,.1
+                pos : 400,700
+
+            Label:
+                text: "Email:"
+                size_hint : .1,.02
+                pos : 200,500
+            TextInput :
+                multiline:False
+                size_hint : .5,.1
+                pos : 400,500
+
+            Label:
+                text: "Height:"
+                size_hint : .1,.02
+                pos : 200,300
+            TextInput :
+                multiline:False
+                pos : 400,300
+                size_hint : .5,.1
+
+        Button:
+            text : "Submit"
+            size_hint : .1,.02
+            pos : 200,100
