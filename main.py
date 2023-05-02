@@ -14,12 +14,23 @@ from kivy.config import Config
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-
 class MainWindow(Screen):
     pass
 
 
-class SecondWindow(Screen):
+class Test1Window(Screen):
+    pass
+
+
+class Test2Window(Screen):
+    pass
+
+
+class Test3Window(Screen):
+    pass
+
+
+class ResultWindow(Screen):
     pass
 
 
@@ -28,6 +39,7 @@ class WindowManager(ScreenManager):
 
 
 kv = Builder.load_file("my.kv")
+
 
 class MyMainApp(App):
     def build(self):

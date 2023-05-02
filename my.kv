@@ -1,23 +1,28 @@
 WindowManager:
     MainWindow:
-    SecondWindow:
+    Test1Window:
+    Test2Window:
+    Test3Window:
+    ResultWindow:
 
 
 <Label>:
     size_hint : 0.15,0.035
+    font_name: "meiryo.ttc"
 
 <Button>:
     size_hint : 0.1,0.035
 
 <MainWindow>:
     name : "main"
+    
 
 
 
     FloatLayout:
 
         Label :
-            text : "Mail Address"
+            text : "住所"
             pos_hint : {"x":0.25,"y":0.9}
 
         TextInput :
@@ -25,7 +30,7 @@ WindowManager:
             size_hint : 0.5,0.035
             pos_hint : {"x":0.45,"y":0.9}
         Label :
-            text : "Mail Address"
+            text : "メールアドレス"
             pos_hint : {"x":0.25,"y":0.75}
 
         TextInput :
@@ -35,7 +40,7 @@ WindowManager:
 
 
         Label :
-            text : "Mail Address"
+            text : "年齢"
             pos_hint : {"x":0.25,"y":0.6}
 
         TextInput :
@@ -47,14 +52,40 @@ WindowManager:
             pos_hint : {"x":0.45,"y":0.4}
             text : "Start"
             on_release :
-                app.root.current = "second"
+                app.root.current = "test1"
                 root.manager.transition.direction = "left"
 
-<SecondWindow>:
-    name : "second"
+<Test1Window>:
+    name : "test1"
     Button :
         text : "GoBack"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
         on_release :
-            app.root.current = "main"
+            app.root.current = "test2"
+            root.manager.transition.direction = "left"
+
+<Test2Window>:
+    name : "test2"
+    Button :
+        text : "Next"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        on_release :
+            app.root.current = "test3"
+            root.manager.transition.direction = "left"
+
+<Test3Window>:
+    name : "test3"
+    Button :
+        text : "next"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        on_release :
+            app.root.current = "result"
             root.manager.transition.direction = "right"
+<ResultWindow>:
+    name : "result"
+    Button :
+        text : "End"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        on_release :
+            app.root.current = "main"
+            root.manager.transition.direction = "up"
