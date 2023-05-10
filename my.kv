@@ -1,8 +1,6 @@
-WindowManager:
+<WindowManager>:
     MainWindow:
-    Test1Window:
-    Test2Window:
-    Test3Window:
+    TestWindow:
     ResultWindow:
 
 
@@ -15,7 +13,6 @@ WindowManager:
 
 <MainWindow>:
     name : "main"
-    
 
 
 
@@ -26,16 +23,18 @@ WindowManager:
             pos_hint : {"x":0.25,"y":0.9}
 
         TextInput :
+            id : address
             multiline : False
-            size_hint : 0.5,0.035
+            size_hint : 0.5,0.05
             pos_hint : {"x":0.45,"y":0.9}
         Label :
-            text : "メールアドレス"
+            text : "性別"
             pos_hint : {"x":0.25,"y":0.75}
 
         TextInput :
+            id : gender
             multiline : False
-            size_hint : 0.5,0.035
+            size_hint : 0.5,0.05
             pos_hint : {"x":0.45,"y":0.75}
 
 
@@ -43,49 +42,64 @@ WindowManager:
             text : "年齢"
             pos_hint : {"x":0.25,"y":0.6}
 
+
         TextInput :
+            id : age
             multiline : False
-            size_hint : 0.5,0.035
+            size_hint : 0.5,0.05
             pos_hint : {"x":0.45,"y":0.6}
 
+        Label :
+            text : "身長"
+            pos_hint : {"x":0.25,"y":0.45}
+
+        TextInput :
+            id : ht
+            multiline : False
+            size_hint : 0.5,0.05
+            pos_hint : {"x":0.45,"y":0.45}
+
+
+        Label :
+            id : error_label_main
+            text : "Comment"
+            pos_hint : {"x":0.25,"y":0.2}
         Button :
-            pos_hint : {"x":0.45,"y":0.4}
+            pos_hint : {"x":0.45,"y":0.3}
             text : "Start"
             on_release :
-                app.root.current = "test1"
-                root.manager.transition.direction = "left"
+                root.data_call()
 
-<Test1Window>:
-    name : "test1"
-    Button :
-        text : "GoBack"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
-        on_release :
-            app.root.current = "test2"
-            root.manager.transition.direction = "left"
 
-<Test2Window>:
-    name : "test2"
+<TestWindow>:
+    name : "test"
+    Label :
+        id : test2_label
+        text : "Under Construction"
     Button :
-        text : "Next"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
-        on_release :
-            app.root.current = "test3"
-            root.manager.transition.direction = "left"
-
-<Test3Window>:
-    name : "test3"
-    Button :
-        text : "next"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        text : "Pass"
+        pos_hint : {"center_x" : 0.75 , "center_y" : 0.5}
         on_release :
             app.root.current = "result"
-            root.manager.transition.direction = "right"
+            root.manager.transition.direction = "left"
+
+
+    Button :
+        text : "Fail"
+        pos_hint : {"center_x" : 0.25 , "center_y" : 0.5}
+        on_release :
+            app.root.current = "result"
+            root.manager.transition.direction = "left"
+
+
 <ResultWindow>:
     name : "result"
+    Label :
+        text : "You Old"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
     Button :
         text : "End"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "up"
