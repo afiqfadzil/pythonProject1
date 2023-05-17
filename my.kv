@@ -69,7 +69,7 @@
             text : "Start"
             on_release :
                 root.data_call()
-                root.seat()
+
 
 
 
@@ -78,14 +78,16 @@
     name : "test"
     Label :
         id : test2_label
-        text : "Under Construction"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
+        text :"Under Construction"
     Button :
         text : "Pass"
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.5}
         on_release :
             root.passed()
-            root.next_screen()
             root.rating_func()
+            root.next_screen()
+
 
 
 
@@ -102,8 +104,19 @@
 <ResultWindow>:
     name : "result"
     Label :
+        id:result_label_comment
         text : "You Old"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+    Label :
+        id:result_label_age
+        text : "You Old"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.45}
+    Label :
+        id:result_label_rage
+        text : "You Old"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
+
+
     Button :
         text : "End"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}

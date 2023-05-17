@@ -22,7 +22,7 @@ Config.set('graphics', 'resizable', '0')  # 0 being off 1 being on as in true/fa
 Config.set('graphics', 'width', '700')
 Config.set('graphics', 'height', '1000')
 Config.write()
-C = ["素晴らしい基礎運動力です",
+C = ["Error Check","素晴らしい基礎運動力です",
      "良い基礎運動力です",
      "基礎運動力平均より低い、筋肉バランス感覚のトレーニングをしましょう",
      "ロコモシンドロームの傾向がありロコモ検診してください",
@@ -38,11 +38,7 @@ class MainWindow(Screen):
         MainWindow.pre_score = 0
         MainWindow.seat_height = 0
 
-    def seat(self):
-        # Calculate Seat Height
-        MainWindow.seat_height = 0.25 * MainWindow.ht - 1
-        print(MainWindow.seat_height)
-        return 0
+
 
     def data_call(self):
 
@@ -58,10 +54,11 @@ class MainWindow(Screen):
 
         test1_screen.ids.test2_label.text = ht_text
 
-        # "Not Implemented"
-        # Input will Fail if Blank Fields, Age is not a number, Age > 150 , Height > 2.50M
+        # "Not Implemented yet"
+        # Input will Fail if Blank Fields, Age is not a number, Age > 150 , Height > 2.50M (Done)
         # Address API
         # Radio Button for Gender
+        # Space or Tab will be neglected
         if ht_text == "" or str(ht_text.isnumeric()) == "False":
             main_screen.ids.error_label_main.text = "身長を入力してください！"
             return 0
@@ -71,6 +68,7 @@ class MainWindow(Screen):
 
         MainWindow.age = int(age_text)
         MainWindow.ht = int(ht_text)
+        MainWindow.seat_height = 0.25 * MainWindow.ht - 1
         if MainWindow.age < 15 or MainWindow.age > 150:
             main_screen.ids.error_label_main.text = "年齢にエラー (15~150)"
             return 0
@@ -90,6 +88,7 @@ class MainWindow(Screen):
         print(MainWindow.nt)
         self.manager.current = "test"
         self.manager.transition.direction = "left"
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,Seat Height is {MainWindow.seat_height}'
 
     pass
 
@@ -97,40 +96,62 @@ class MainWindow(Screen):
 class TestWindow(Screen):
     # R = MainWindow.age - test_array[MainWindow.nt][3]
 
+
     def __init__(self, **kw):
         super().__init__(**kw)
         TestWindow.c = 0
         TestWindow.score = 0
         self.prev = 0
         self.rating = 0
+        self.cnt = 0
+
+
 
     def rating_func(self):
+        self.rating = MainWindow.age - test_array[MainWindow.nt][3]
         if TestWindow.c == 3:
-            self.rating = MainWindow.age - test_array[MainWindow.nt][3]
+
 
             if int(self.rating) > 20:
-                print(C[0])
+                self.cnt = 1
+                print(C[self.cnt])
                 pass
 
             elif int(self.rating) > 0:
-                print(C[1])
+                self.cnt = 2
+                print(C[self.cnt])
                 pass
+
             elif int(self.rating) > (-20):
-                print(C[2])
+                self.cnt= 3
+                print(C[self.cnt])
                 pass
+
             elif int(self.rating) > (-30):
-                print(C[3])
+                self.cnt = 4
+                print(C[self.cnt])
                 pass
-            elif int(self.rating) < -30:
-                print(C[4])
-                pass
+
             else:
+                self.cnt = 5
+                print(C[self.cnt])
                 pass
+
+            result_screen = self.manager.get_screen("result")
+            result_screen.ids.result_label_comment.text = C[self.cnt]
+            result_screen.ids.result_label_age.text = f'貴殿の年齢は :{(str(MainWindow.age))}'
+            result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+
+            print(self.rating)
+            print(MainWindow.age)
+            print(test_array[MainWindow.nt][3])
+
+
 
         pass
 
     def next_screen(self):
-        if TestWindow.c == 4:
+        if TestWindow.c == 3:
             self.manager.current = "result"
             self.manager.transition.direction = "left"
             TestWindow.c = 0
@@ -164,8 +185,10 @@ class TestWindow(Screen):
             print(self.rating)
 
         self.prev = 0
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,You Passed!'
         TestWindow.c = TestWindow.c + 1
         print(MainWindow.nt)
+
         return MainWindow.nt
 
     def failed(self):
@@ -198,6 +221,7 @@ class TestWindow(Screen):
             pass
 
         self.prev = 1
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,You Failed!'
         TestWindow.c = TestWindow.c + 1
 
         return MainWindow.nt
