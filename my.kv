@@ -69,6 +69,8 @@
             text : "Start"
             on_release :
                 root.data_call()
+                root.seat()
+
 
 
 
@@ -81,17 +83,20 @@
         text : "Pass"
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.5}
         on_release :
-            app.root.current = "result"
-            root.manager.transition.direction = "left"
             root.passed()
+            root.next_screen()
+            root.rating_func()
+
 
 
     Button :
         text : "Fail"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.5}
         on_release :
-            app.root.current = "result"
-            root.manager.transition.direction = "left"
+            root.failed()
+            root.rating_func()
+            root.next_screen()
+
 
 
 <ResultWindow>:
