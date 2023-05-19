@@ -88,7 +88,7 @@ class MainWindow(Screen):
         print(MainWindow.nt)
         self.manager.current = "test"
         self.manager.transition.direction = "left"
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,Seat Height is {MainWindow.seat_height}'
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,Seat Height is {MainWindow.seat_height}'
 
     pass
 
@@ -185,8 +185,9 @@ class TestWindow(Screen):
             print(self.rating)
 
         self.prev = 0
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,You Passed!'
         TestWindow.c = TestWindow.c + 1
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,You Passed!'
+
         print(MainWindow.nt)
 
         return MainWindow.nt
@@ -221,8 +222,9 @@ class TestWindow(Screen):
             pass
 
         self.prev = 1
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,You Failed!'
         TestWindow.c = TestWindow.c + 1
+        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,You Failed!'
+
 
         return MainWindow.nt
 
