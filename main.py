@@ -6,9 +6,13 @@ from kivy.utils import platform
 # from kivymd.app import MDApp
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
+from kivy.uix.slider import Slider
+from kivy.uix.dropdown import DropDown
 from kivy.properties import ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
+from kivy.uix.checkbox import CheckBox
+
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -22,11 +26,16 @@ Config.set('graphics', 'resizable', '0')  # 0 being off 1 being on as in true/fa
 Config.set('graphics', 'width', '700')
 Config.set('graphics', 'height', '1000')
 Config.write()
-C = ["Error Check","素晴らしい基礎運動力です",
+C = ["Error Check", "素晴らしい基礎運動力です",
      "良い基礎運動力です",
      "基礎運動力平均より低い、筋肉バランス感覚のトレーニングをしましょう",
      "ロコモシンドロームの傾向がありロコモ検診してください",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
+
+
+class TitleWindow(Screen):  # incomplete
+    pass
+
 
 class MainWindow(Screen):
     def __init__(self, **kwargs):
@@ -40,6 +49,7 @@ class MainWindow(Screen):
 
 
 
+
     def data_call(self):
 
         test1_screen = self.manager.get_screen("test")
@@ -48,9 +58,9 @@ class MainWindow(Screen):
         # Collect all the data from the Text Input Field in "my.kv"
 
         ht_text = main_screen.ids.ht.text
-        address_text = main_screen.ids.address.text
+
         age_text = main_screen.ids.age.text
-        gender_text = main_screen.ids.gender.text
+
 
         test1_screen.ids.test2_label.text = ht_text
 
@@ -86,16 +96,17 @@ class MainWindow(Screen):
             MainWindow.nt = 2
             pre_score = 95
         print(MainWindow.nt)
-        self.manager.current = "test"
+        self.manager.current = "loading"
         self.manager.transition.direction = "left"
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c+1}/3,Seat Height is {MainWindow.seat_height}'
+        self.manager.get_screen(
+            "test").ids.test2_label.text = f'Test{TestWindow.c + 1}/3,Seat Height is {MainWindow.seat_height}'
 
     pass
 
 
+# Have to add the picture on the posture + what is やり直しmeans
 class TestWindow(Screen):
     # R = MainWindow.age - test_array[MainWindow.nt][3]
-
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -105,12 +116,9 @@ class TestWindow(Screen):
         self.rating = 0
         self.cnt = 0
 
-
-
     def rating_func(self):
         self.rating = MainWindow.age - test_array[MainWindow.nt][3]
         if TestWindow.c == 3:
-
 
             if int(self.rating) > 20:
                 self.cnt = 1
@@ -123,7 +131,7 @@ class TestWindow(Screen):
                 pass
 
             elif int(self.rating) > (-20):
-                self.cnt= 3
+                self.cnt = 3
                 print(C[self.cnt])
                 pass
 
@@ -145,8 +153,6 @@ class TestWindow(Screen):
             print(self.rating)
             print(MainWindow.age)
             print(test_array[MainWindow.nt][3])
-
-
 
         pass
 
@@ -225,9 +231,16 @@ class TestWindow(Screen):
         TestWindow.c = TestWindow.c + 1
         self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,You Failed!'
 
-
         return MainWindow.nt
 
+    pass  ##
+
+
+class LoadingWindow(Screen):  # incomplete
+    pass
+
+
+class MaintenanceWindow(Screen):
     pass
 
 

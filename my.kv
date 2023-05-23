@@ -1,12 +1,22 @@
 <WindowManager>:
+    TitleWindow:
     MainWindow:
     TestWindow:
     ResultWindow:
+    LoadingWindow:
+    MaintenanceWindow:
+
+
 
 
 <Label>:
     size_hint : 0.15,0.035
     font_name: "meiryo.ttc"
+    font_size : '14sp'
+<TextInput>:
+    font_size : '20sp'
+
+
 
 <Button>:
     size_hint : 0.1,0.035
@@ -18,46 +28,65 @@
 
     FloatLayout:
 
-        Label :
-            text : "住所"
-            pos_hint : {"x":0.25,"y":0.9}
 
-        TextInput :
-            id : address
-            multiline : False
-            size_hint : 0.5,0.05
-            pos_hint : {"x":0.45,"y":0.9}
+
+
+
         Label :
-            text : "性別"
+            text : "年齢:"
             pos_hint : {"x":0.25,"y":0.75}
-
-        TextInput :
-            id : gender
-            multiline : False
-            size_hint : 0.5,0.05
-            pos_hint : {"x":0.45,"y":0.75}
-
-
-        Label :
-            text : "年齢"
-            pos_hint : {"x":0.25,"y":0.6}
 
 
         TextInput :
             id : age
             multiline : False
-            size_hint : 0.5,0.05
-            pos_hint : {"x":0.45,"y":0.6}
+            size_hint : 0.5,0.040
+            pos_hint : {"x":0.45,"y":0.75}
 
         Label :
-            text : "身長"
-            pos_hint : {"x":0.25,"y":0.45}
+            text : "身長:"
+            pos_hint : {"x":0.25,"y":0.65}
 
         TextInput :
             id : ht
             multiline : False
-            size_hint : 0.5,0.05
-            pos_hint : {"x":0.45,"y":0.45}
+            size_hint : 0.5,0.040
+            pos_hint : {"x":0.45,"y":0.65}
+
+        Label:
+            text:"性別:"
+            pos_hint : {"x":0.25,"y":0.55}
+        Label:
+            text:"男性"
+            pos_hint : {"x":0.4,"y":0.55}
+        CheckBox:
+            id: male_gender
+            group: "gender"
+            active: False
+            pos_hint: {"x":0.45,"y":0.55}
+            size_hint : 0.15,0.035
+        Label:
+            text:"女性"
+            pos_hint : {"x":0.55,"y":0.55}
+        CheckBox:
+            id: female_gender
+            group: "gender"
+            active: False
+            pos_hint: {"x":0.60,"y":0.55}
+            size_hint : 0.15,0.035
+        Label:
+            text:"他の"
+            pos_hint : {"x":0.70,"y":0.55}
+        CheckBox:
+            id: other_gender
+            group: "gender"
+            active: False
+            pos_hint: {"x":0.75,"y":0.55}
+            size_hint : 0.15,0.035
+
+
+
+
 
 
         Label :
@@ -81,8 +110,8 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
         text :"Under Construction"
     Button :
-        text : "Pass"
-        pos_hint : {"center_x" : 0.75 , "center_y" : 0.5}
+        text : "成功"
+        pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
         on_release :
             root.passed()
             root.rating_func()
@@ -92,12 +121,17 @@
 
 
     Button :
-        text : "Fail"
-        pos_hint : {"center_x" : 0.25 , "center_y" : 0.5}
+        text : "失敗"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         on_release :
             root.failed()
             root.rating_func()
             root.next_screen()
+
+    Button :
+        text : "やり直し"
+        pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
+
 
 
 
@@ -123,3 +157,35 @@
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "up"
+
+<TitleWindow>:
+    name : "title"
+    Label :
+        id:title_label
+        text : "WELCOME!"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+
+
+
+
+    Button :
+        text : "Proceed"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        on_release :
+            app.root.current = "main"
+            root.manager.transition.direction = "up"
+
+<LoadingWindow>:
+    name : "loading"
+    Label :
+        id:loading_label
+        text : "Wait while the chair is being set up"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+
+    Button :
+        text : "Proceed"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        on_release :
+            app.root.current = "test"
+            root.manager.transition.direction = "up"
+
