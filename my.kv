@@ -172,8 +172,8 @@
         text : "Proceed"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         on_release :
-            app.root.current = "main"
-            root.manager.transition.direction = "up"
+            root.connect()
+
 
 <LoadingWindow>:
     name : "loading"

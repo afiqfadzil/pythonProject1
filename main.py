@@ -1,4 +1,5 @@
 # This is a sample Python script.
+import socket
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -12,7 +13,6 @@ from kivy.properties import ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
 from kivy.uix.checkbox import CheckBox
-
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -33,7 +33,24 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
 
-class TitleWindow(Screen):  # incomplete
+class TitleWindow(Screen):  # connection to server may start here
+    def connect(self):
+        import socket
+
+        HOST = "127.0.0.1"  # The server's hostname or IP address
+        PORT = 65432  # The port used by the server
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.send(b"Hello, world")
+            data = s.recv(1024)
+
+        print(f"Received {data!r}")
+
+        #self.manager.current = "main"
+        #self.manager.transition.direction = "up"
+        pass
+
     pass
 
 
@@ -47,9 +64,6 @@ class MainWindow(Screen):
         MainWindow.pre_score = 0
         MainWindow.seat_height = 0
 
-
-
-
     def data_call(self):
 
         test1_screen = self.manager.get_screen("test")
@@ -60,7 +74,6 @@ class MainWindow(Screen):
         ht_text = main_screen.ids.ht.text
 
         age_text = main_screen.ids.age.text
-
 
         test1_screen.ids.test2_label.text = ht_text
 
