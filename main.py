@@ -1,5 +1,5 @@
-# This is a sample Python script.
 import socket
+from kivy.uix.label import Label
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -13,6 +13,8 @@ from kivy.properties import ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.config import Config
 from kivy.uix.checkbox import CheckBox
+from client import *
+from threading import Thread
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -33,23 +35,27 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
 
+
+class MyLabel(Label):
+    def __init__(self, **kwargs):
+        super(MyLabel, self).__init__(**kwargs)
+
+        self.sock = MySocket()
+        Thread(target=self.get_data).start()
+
+    def get_data(self):
+        while True:
+            self.text = self.sock.get_data()
+            print(self.text)
+
+
+
 class TitleWindow(Screen):  # connection to server may start here
-    def connect(self):
-        import socket
 
-        HOST = "127.0.0.1"  # The server's hostname or IP address
-        PORT = 65432  # The port used by the server
-
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((HOST, PORT))
-            s.send(b"Hello, world")
-            data = s.recv(1024)
-
-        print(f"Received {data!r}")
 
         #self.manager.current = "main"
         #self.manager.transition.direction = "up"
-        pass
+
 
     pass
 
@@ -273,10 +279,24 @@ class MyMainApp(App):
             Window.size = (620, 1024)
 
         return WindowManager()
+    def on_start(self):
+        socket_thread = MyLabel()
+        socket_thread.get_data()
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    host = 'localhost'
+    port = 54545
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind((host, port))
+        print("socket binded to port", port)
+        s.listen(5)
+    except:
+        print('Failed to connect')
+        exit()
     MyMainApp().run()
+    s.close
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
