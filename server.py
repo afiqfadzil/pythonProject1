@@ -15,5 +15,6 @@ clientsocket,addr = serversocket.accept()
 print("got a connection from %s" % str(addr))
 
 while True:
-    msg = input("> ") + "\r\n"
-    clientsocket.send(msg.encode('ascii'))
+    recv_msg = clientsocket.recv(1024)
+    print(recv_msg.decode('utf-8'))
+    send_msg = clientsocket.send(recv_msg)

@@ -15,6 +15,7 @@ from kivy.config import Config
 from kivy.uix.checkbox import CheckBox
 from client import *
 from threading import Thread
+import threading
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -35,29 +36,33 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
 
+class TitleWindow(Screen):  # connection to server may start here
 
-class MyLabel(Label):
     def __init__(self, **kwargs):
-        super(MyLabel, self).__init__(**kwargs)
+        super(TitleWindow, self).__init__(**kwargs)
 
         self.sock = MySocket()
         Thread(target=self.get_data).start()
+        Thread(target=self.send_data).start()
+        self.text = 0
+        self.send_text = 0
 
     def get_data(self):
         while True:
             self.text = self.sock.get_data()
-            print(self.text)
+            print(self.text.decode('utf-8'))
 
+    def send_data(self):
+        while True:
+            seat = MainWindow.seat_height
+            self.sock.send_data(seat)
+            break
 
+    def next_screen(self):
+        self.manager.current = "main"
+        self.manager.transition.direction = "up"
 
-class TitleWindow(Screen):  # connection to server may start here
-
-
-        #self.manager.current = "main"
-        #self.manager.transition.direction = "up"
-
-
-    pass
+        pass
 
 
 class MainWindow(Screen):
@@ -119,8 +124,14 @@ class MainWindow(Screen):
         self.manager.transition.direction = "left"
         self.manager.get_screen(
             "test").ids.test2_label.text = f'Test{TestWindow.c + 1}/3,Seat Height is {MainWindow.seat_height}'
+        seat=MainWindow.seat_height
+        a = TitleWindow()
+        a.send_data(seat)
 
-    pass
+        main_screen.ids.ht.text = ""
+        main_screen.ids.age.text = ""
+
+        pass
 
 
 # Have to add the picture on the posture + what is やり直しmeans
@@ -277,26 +288,11 @@ class MyMainApp(App):
             Window.maximize()
         else:
             Window.size = (620, 1024)
-
         return WindowManager()
-    def on_start(self):
-        socket_thread = MyLabel()
-        socket_thread.get_data()
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    host = 'localhost'
-    port = 54545
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        s.bind((host, port))
-        print("socket binded to port", port)
-        s.listen(5)
-    except:
-        print('Failed to connect')
-        exit()
     MyMainApp().run()
-    s.close
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
