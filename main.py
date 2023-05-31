@@ -20,10 +20,12 @@ import threading
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 # test_array [SeatHeight,OneL = 0/BothL = 1 , Score , Locomotion Age]
-test_array = [[], [0.5, 0, 100, 16.00], [0.5, 0, 95, 27.95], [0.625, 0, 90, 39.9],
-              [0.75, 0, 85, 51.85], [0.875, 0, 80, 63.8], [1.0, 0, 75, 75.75], [0.375, 1, 70, 87.7],
-              [0.5, 1, 65, 99.65], [0.625, 1, 60, 111.6], [0.75, 1, 55, 123.55], [0.875, 1, 50, 135.5],
-              [1.0, 1, 45, 147.45], [1.125, 0, 40, 159.4], [1.25, 35, 171.35]]
+test_array = [[], [0.5, "One Leg", 100, 16.00], [0.5, "One Leg", 95, 27.95], [0.625, "One Leg", 90, 39.9],
+              [0.75, "One Leg", 85, 51.85], [0.875, "One Leg", 80, 63.8], [1.0, "One Leg", 75, 75.75],
+              [0.375, "Two Legs", 70, 87.7],
+              [0.5, "Two Legs", 65, 99.65], [0.625, "Two Legs", 60, 111.6], [0.75, "Two Legs", 55, 123.55],
+              [0.875, "Two Legs", 50, 135.5],
+              [1.0, "Two Legs", 45, 147.45], [1.125, "Two Legs", 40, 159.4], [1.25, "Two Legs", 35, 171.35]]
 Builder.load_file("my.kv")
 Config.set('graphics', 'resizable', '0')  # 0 being off 1 being on as in true/false
 Config.set('graphics', 'width', '700')
@@ -43,7 +45,6 @@ class TitleWindow(Screen):  # connection to server may start here
 
         self.sock = MySocket()
         Thread(target=self.get_data).start()
-        Thread(target=self.send_data).start()
         self.text = 0
         self.send_text = 0
 
@@ -51,12 +52,6 @@ class TitleWindow(Screen):  # connection to server may start here
         while True:
             self.text = self.sock.get_data()
             print(self.text.decode('utf-8'))
-
-    def send_data(self):
-        while True:
-            seat = MainWindow.seat_height
-            self.sock.send_data(seat)
-            break
 
     def next_screen(self):
         self.manager.current = "main"
@@ -66,14 +61,23 @@ class TitleWindow(Screen):  # connection to server may start here
 
 
 class MainWindow(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    tw = TitleWindow()
+    sock = tw.sock
 
+    def __init__(self, **kwargs):
+        super(MainWindow, self).__init__(**kwargs)
+
+        Thread(target=self.send_data).start()
         MainWindow.ht = 0
         MainWindow.nt = 0
         MainWindow.age = 0
         MainWindow.pre_score = 0
-        MainWindow.seat_height = 0
+        MainWindow.seat_height = 0  # the one that will be sent to the chair
+        MainWindow.std_height = 0  # Capital H
+        self.seat = 0
+
+    def send_data(self, msg=None):
+        self.sock.send_data(msg)
 
     def data_call(self):
 
@@ -102,7 +106,7 @@ class MainWindow(Screen):
 
         MainWindow.age = int(age_text)
         MainWindow.ht = int(ht_text)
-        MainWindow.seat_height = 0.25 * MainWindow.ht - 1
+        MainWindow.std_height = 0.25 * MainWindow.ht - 1
         if MainWindow.age < 15 or MainWindow.age > 150:
             main_screen.ids.error_label_main.text = "年齢にエラー (15~150)"
             return 0
@@ -120,13 +124,14 @@ class MainWindow(Screen):
             MainWindow.nt = 2
             pre_score = 95
         print(MainWindow.nt)
+        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
         self.manager.get_screen(
-            "test").ids.test2_label.text = f'Test{TestWindow.c + 1}/3,Seat Height is {MainWindow.seat_height}'
-        seat=MainWindow.seat_height
-        a = TitleWindow()
-        a.send_data(seat)
+            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+
+        self.seat = MainWindow.seat_height
+        self.send_data(str(self.seat))
 
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
@@ -139,12 +144,14 @@ class TestWindow(Screen):
     # R = MainWindow.age - test_array[MainWindow.nt][3]
 
     def __init__(self, **kw):
-        super().__init__(**kw)
+        super(TestWindow, self).__init__(**kw)
         TestWindow.c = 0
         TestWindow.score = 0
+
         self.prev = 0
         self.rating = 0
         self.cnt = 0
+        self.send_text = 0
 
     def rating_func(self):
         self.rating = MainWindow.age - test_array[MainWindow.nt][3]
@@ -213,20 +220,19 @@ class TestWindow(Screen):
                 MainWindow.nt = MainWindow.nt - 1
                 if MainWindow.nt < 1:
                     MainWindow.nt = 1
-            else:
-                pass
 
         if TestWindow.c == 2:  # FinalMarking
             self.rating = float(test_array[MainWindow.nt][3]) - float(MainWindow.age)
-            print(self.rating)
 
         self.prev = 0
         TestWindow.c = TestWindow.c + 1
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,You Passed!'
+        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
+        self.manager.get_screen(
+            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
 
-        print(MainWindow.nt)
+        print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
 
-        return MainWindow.nt
+
 
     def failed(self):
         if TestWindow.c < 2:
@@ -241,29 +247,24 @@ class TestWindow(Screen):
                 if MainWindow.nt > 14:
                     MainWindow.nt = 14
 
-                print("FailFail")
-
-
             elif TestWindow.c == 1 and int(self.prev) == 0:  # PassFail
                 MainWindow.nt = MainWindow.nt + 1
                 if MainWindow.nt > 14:
                     MainWindow.nt = 14
-                print("PassFail")
 
         if TestWindow.c == 2:  # FinalMarking
             MainWindow.nt = MainWindow.nt + 1
             self.rating = float(MainWindow.age) - float(test_array[MainWindow.nt][3])
 
-            print(self.rating)
-            pass
-
         self.prev = 1
         TestWindow.c = TestWindow.c + 1
-        self.manager.get_screen("test").ids.test2_label.text = f'Test{TestWindow.c}/3,You Failed!'
-
+        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
+        self.manager.get_screen(
+            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
         return MainWindow.nt
 
-    pass  ##
+    pass
 
 
 class LoadingWindow(Screen):  # incomplete

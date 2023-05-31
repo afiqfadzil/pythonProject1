@@ -11,6 +11,5 @@ class MySocket:
     def get_data(self):
         return self.sock.recv(1024)
 
-    def send_data(self,send_msg):
-
-        return self.sock.send(str(send_msg).encode())
+    def send_data(self, send_msg):
+        self.sock.send(send_msg.encode())

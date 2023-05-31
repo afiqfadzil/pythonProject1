@@ -3,7 +3,7 @@ import socket
 
 serversocket = socket.socket()
 
-host = 'localhost'
+host = "localhost"
 port = 54545
 
 
