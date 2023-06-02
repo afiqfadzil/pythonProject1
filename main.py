@@ -37,13 +37,16 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "ロコモシンドロームの傾向がありロコモ検診してください",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
+# Task
+# server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
+#
 
-class TitleWindow(Screen):  # connection to server may start here
-
+class ControlScreen(Screen):
     def __init__(self, **kwargs):
-        super(TitleWindow, self).__init__(**kwargs)
+        super(ControlScreen, self).__init__(**kwargs)
 
         self.sock = MySocket()
+        Thread(target=self.send_data).start()
         Thread(target=self.get_data).start()
         self.text = 0
         self.send_text = 0
@@ -53,6 +56,19 @@ class TitleWindow(Screen):  # connection to server may start here
             self.text = self.sock.get_data()
             print(self.text.decode('utf-8'))
 
+    def send_data(self, msg=None):
+        while True:
+            # msg = input()
+            self.sock.send_data(msg)
+            break
+
+
+class WindowManager(ScreenManager):
+    pass
+
+
+class TitleWindow(Screen):  # connection to server may start here
+
     def next_screen(self):
         self.manager.current = "main"
         self.manager.transition.direction = "up"
@@ -60,24 +76,22 @@ class TitleWindow(Screen):  # connection to server may start here
         pass
 
 
+send = ControlScreen()
+
+
 class MainWindow(Screen):
-    tw = TitleWindow()
-    sock = tw.sock
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
 
-        Thread(target=self.send_data).start()
         MainWindow.ht = 0
         MainWindow.nt = 0
         MainWindow.age = 0
         MainWindow.pre_score = 0
         MainWindow.seat_height = 0  # the one that will be sent to the chair
         MainWindow.std_height = 0  # Capital H
-        self.seat = 0
 
-    def send_data(self, msg=None):
-        self.sock.send_data(msg)
+        self.seat = 0
 
     def data_call(self):
 
@@ -131,8 +145,7 @@ class MainWindow(Screen):
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
 
         self.seat = MainWindow.seat_height
-        self.send_data(str(self.seat))
-
+        send.send_data(str(self.seat))
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
 
@@ -229,10 +242,9 @@ class TestWindow(Screen):
         MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
         self.manager.get_screen(
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
-
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
-
-
+        self.send_text = MainWindow.seat_height
+        send.send_data(str(self.send_text))
 
     def failed(self):
         if TestWindow.c < 2:
@@ -262,12 +274,18 @@ class TestWindow(Screen):
         self.manager.get_screen(
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
+
+        self.send_text = MainWindow.seat_height
+        send.send_data(str(self.send_text))
         return MainWindow.nt
 
     pass
 
 
 class LoadingWindow(Screen):  # incomplete
+    # disable the button until the chair had been set up (+OK signal from raspberry pi)
+    # insert in between every test window
+    # (Extra) add loading button
     pass
 
 
@@ -276,10 +294,6 @@ class MaintenanceWindow(Screen):
 
 
 class ResultWindow(Screen):
-    pass
-
-
-class WindowManager(ScreenManager):
     pass
 
 

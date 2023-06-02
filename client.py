@@ -9,7 +9,8 @@ class MySocket:
         print("Connected")
 
     def get_data(self):
-        return self.sock.recv(1024)
+        recv_msg = self.sock.recv(1024)
+        return recv_msg
 
     def send_data(self, send_msg):
         self.sock.send(send_msg.encode())
