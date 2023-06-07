@@ -39,7 +39,7 @@ C = ["Error Check", "素晴らしい基礎運動力です",
 
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
-#
+# configure so that the program do not crash if not connected to a server
 
 class ControlScreen(Screen):
     def __init__(self, **kwargs):
