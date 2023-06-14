@@ -16,6 +16,8 @@ from kivy.uix.checkbox import CheckBox
 from client import *
 from threading import Thread
 import threading
+from time import sleep
+
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -55,6 +57,7 @@ class ControlScreen(Screen):
         while True:
             self.text = self.sock.get_data()
             print(self.text.decode('utf-8'))
+            sleep(3)
 
     def send_data(self, msg=None):
         while True:
@@ -138,7 +141,7 @@ class MainWindow(Screen):
             MainWindow.nt = 2
             pre_score = 95
         print(MainWindow.nt)
-        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
+        MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
         self.manager.get_screen(
@@ -239,7 +242,7 @@ class TestWindow(Screen):
 
         self.prev = 0
         TestWindow.c = TestWindow.c + 1
-        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
+        MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         self.manager.get_screen(
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
@@ -270,7 +273,7 @@ class TestWindow(Screen):
 
         self.prev = 1
         TestWindow.c = TestWindow.c + 1
-        MainWindow.seat_height = MainWindow.std_height * test_array[MainWindow.nt][0]
+        MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         self.manager.get_screen(
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
