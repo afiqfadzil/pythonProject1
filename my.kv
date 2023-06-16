@@ -119,7 +119,8 @@
         on_release :
             root.passed()
             root.rating_func()
-            root.next_screen()
+            root.next_screen_loading()
+            root.next_screen_result()
 
 
 
@@ -130,7 +131,8 @@
         on_release :
             root.failed()
             root.rating_func()
-            root.next_screen()
+            root.next_screen_loading()
+            root.next_screen_result()
 
     Button :
         text : "やり直し"
@@ -182,15 +184,22 @@
 
 <LoadingWindow>:
     name : "loading"
+    on_enter:
+        root.enable_load_button()
     Label :
         id:loading_label
         text : "Wait while the chair is being set up"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
 
     Button :
+        id : load_button
         text : "Proceed"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        disabled : True
         on_release :
+            root.disable_load_button()
             app.root.current = "test"
             root.manager.transition.direction = "up"
+
+
 
