@@ -42,44 +42,94 @@ C = ["Error Check", "素晴らしい基礎運動力です",
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
 # configure so that the program do not crash if not connected to a server
-
-class ControlScreen(Screen):
+class TitleWindow(Screen):  # connection to server may start here
     def __init__(self, **kwargs):
-        super(ControlScreen, self).__init__(**kwargs)
-
-        self.sock = MySocket()
-        Thread(target=self.send_data).start()
-        Thread(target=self.get_data).start()
+        super(TitleWindow, self).__init__(**kwargs)
+        self.sock = None
         self.text = 0
         self.send_text = 0
-
-    def get_data(self):
-        while True:
-            self.text = self.sock.get_data()
-            print(self.text.decode('utf-8'))
-            return self.text
-
-    def send_data(self, msg=None):
-        while True:
-            # msg = input()
-            self.sock.send_data(msg)
-            break
-
-
-class WindowManager(ScreenManager):
-    pass
-
-
-class TitleWindow(Screen):  # connection to server may start here
 
     def next_screen(self):
         self.manager.current = "main"
         self.manager.transition.direction = "up"
 
-        pass
+    '''  def connection(self):
+        try:
+            self.sock = MySocket()
+            print(self.sock)
+            Thread(target=self.send_data).start()
+            Thread(target=self.get_data).start()
+            self.manager.current = "main"
+            self.manager.transition.direction = "left"
+        except Exception as e:
+            print(str(e))
+            sleep(0.1)
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
+    def get_data(self):
+        while True:
+            if self.sock:
+                self.text = self.sock.get_data()
+                print(self.text.decode('utf-8'))
+                return self.text
+            else:
+                print(self.sock)
+                break
+
+    def send_data(self, msg=None):
+        while True:
+            if self.sock:
+                # msg = input()
+                self.sock.send_data(msg)
+                break
+            else:
+                print(self.sock)
+                break
+
+'''
+
+
+
+class ControlScreen(Screen):
+    def __init__(self, **kwargs):
+        super(ControlScreen, self).__init__(**kwargs)
+        self.text = 0
+        self.send_text = 0
+        try:
+            self.sock = MySocket()
+            Thread(target=self.send_data).start()
+            Thread(target=self.get_data).start()
+        except Exception as e:
+            print(str(e))
+            print("No Connection to server")
+            self.manager.current = "main"
+            self.manager.transition.direction = "left"
+
+    def get_data(self):
+        while True:
+            if self.sock:
+                self.text = self.sock.get_data()
+                print(self.text.decode('utf-8'))
+                return self.text
+            else:
+                print(self.sock)
+
+
+    def send_data(self, msg=None):
+        while True:
+            if self.sock:
+                # msg = input()
+                self.sock.send_data(msg)
+                break
+            else:
+                print(self.sock)
+                break
 
 control = ControlScreen()
+
+class WindowManager(ScreenManager):
+    pass
 
 
 class MainWindow(Screen):
@@ -296,7 +346,8 @@ class LoadingWindow(Screen):  # incomplete
     # (Extra) add loading bar
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
-        self.response =0
+        self.response = 0
+
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")
         # self.response = control.get_data()
@@ -326,6 +377,21 @@ class MaintenanceWindow(Screen):
 
 
 class ResultWindow(Screen):
+    pass
+
+
+class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
+
+    def reconnect(self):
+        try:
+            control.connection()
+        except WindowsError:
+            print("No Connection")
+
+    def top(self):
+        self.manager.current = "title"
+        self.manager.transition.direction = "up"
+
     pass
 
 

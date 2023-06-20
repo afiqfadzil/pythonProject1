@@ -1,11 +1,14 @@
 <WindowManager>:
     TitleWindow:
+    ConnectionWindow:
     MainWindow:
     TestWindow:
     ResultWindow:
     LoadingWindow:
     MaintenanceWindow:
     ControlScreen:
+
+
 
 
 
@@ -182,6 +185,7 @@
 
 
 
+
 <LoadingWindow>:
     name : "loading"
     on_enter:
@@ -200,6 +204,30 @@
             root.disable_load_button()
             app.root.current = "test"
             root.manager.transition.direction = "up"
+
+
+
+<ConnectionWindow>
+    name : "connect"
+    Label :
+        id:connect_label
+        text : "Server is not available, please reconfigure the device..."
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+    Button :
+        id : return
+        text : "Return"
+        pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
+        disabled : False
+        on_release :
+            root.top()
+    Button :
+        id : recon_button
+        text : "Proceed"
+        pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
+        disabled : False
+        on_release :
+            root.reconnect()
+
 
 
 
