@@ -42,10 +42,32 @@ C = ["Error Check", "素晴らしい基礎運動力です",
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
 # configure so that the program do not crash if not connected to a server
+class WindowManager(ScreenManager):
+    pass
+
+
+class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
+    def __init__(self, **kwargs):
+        super(ConnectionWindow, self).__init__(**kwargs)
+        self.name = "connect"
+        self.text = 0
+        self.send_text = 0
+    def reconnect(self):
+        try:
+            control.connection()
+        except WindowsError:
+            print("No Connection")
+
+    def top(self):
+        self.manager.current = "title"
+        self.manager.transition.direction = "up"
+
+    pass
+
+
 class TitleWindow(Screen):  # connection to server may start here
     def __init__(self, **kwargs):
         super(TitleWindow, self).__init__(**kwargs)
-        self.sock = None
         self.text = 0
         self.send_text = 0
 
@@ -53,7 +75,8 @@ class TitleWindow(Screen):  # connection to server may start here
         self.manager.current = "main"
         self.manager.transition.direction = "up"
 
-    '''  def connection(self):
+    '''
+     def connection(self):
         try:
             self.sock = MySocket()
             print(self.sock)
@@ -90,7 +113,6 @@ class TitleWindow(Screen):  # connection to server may start here
 '''
 
 
-
 class ControlScreen(Screen):
     def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
@@ -102,8 +124,9 @@ class ControlScreen(Screen):
             Thread(target=self.get_data).start()
         except Exception as e:
             print(str(e))
+            print(self.manager)
             print("No Connection to server")
-            self.manager.current = "main"
+            self.manager.current = "title"
             self.manager.transition.direction = "left"
 
     def get_data(self):
@@ -115,7 +138,6 @@ class ControlScreen(Screen):
             else:
                 print(self.sock)
 
-
     def send_data(self, msg=None):
         while True:
             if self.sock:
@@ -126,10 +148,8 @@ class ControlScreen(Screen):
                 print(self.sock)
                 break
 
-control = ControlScreen()
 
-class WindowManager(ScreenManager):
-    pass
+control = ControlScreen()
 
 
 class MainWindow(Screen):
@@ -380,28 +400,14 @@ class ResultWindow(Screen):
     pass
 
 
-class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
-
-    def reconnect(self):
-        try:
-            control.connection()
-        except WindowsError:
-            print("No Connection")
-
-    def top(self):
-        self.manager.current = "title"
-        self.manager.transition.direction = "up"
-
-    pass
-
-
 class MyMainApp(App):
     def build(self):
+        self.root = WindowManager()
         if platform == 'android' or platform == 'ios':
             Window.maximize()
         else:
             Window.size = (620, 1024)
-        return WindowManager()
+        return self.root
 
 
 # Press the green button in the gutter to run the script.
