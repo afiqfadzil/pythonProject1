@@ -53,7 +53,7 @@ class TitleWindow(Screen):  # connection to server may start here
         self.manager.current = "main"
         self.manager.transition.direction = "up"
 
-    '''  def connection(self):
+    def connection(self):
         try:
             self.sock = MySocket()
             print(self.sock)
@@ -69,30 +69,24 @@ class TitleWindow(Screen):  # connection to server may start here
 
     def get_data(self):
         while True:
-            if self.sock:
                 self.text = self.sock.get_data()
                 print(self.text.decode('utf-8'))
                 return self.text
-            else:
-                print(self.sock)
-                break
+
 
     def send_data(self, msg=None):
         while True:
-            if self.sock:
                 # msg = input()
                 self.sock.send_data(msg)
                 break
-            else:
-                print(self.sock)
-                break
 
-'''
+
+
 
 
 
 class ControlScreen(Screen):
-    def __init__(self, **kwargs):
+  '''  def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
         self.text = 0
         self.send_text = 0
@@ -125,8 +119,8 @@ class ControlScreen(Screen):
             else:
                 print(self.sock)
                 break
-
-control = ControlScreen()
+'''
+control = TitleWindow()
 
 class WindowManager(ScreenManager):
     pass
