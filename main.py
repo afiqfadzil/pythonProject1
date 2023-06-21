@@ -4,7 +4,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.utils import platform
-# from kivymd.app import MDApp
+from kivymd.app import MDApp
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.uix.slider import Slider
@@ -69,58 +69,20 @@ class TitleWindow(Screen):  # connection to server may start here
 
     def get_data(self):
         while True:
-                self.text = self.sock.get_data()
-                print(self.text.decode('utf-8'))
-                return self.text
-
+            self.text = self.sock.get_data()
+            print(self.text.decode('utf-8'))
+            return self.text
 
     def send_data(self, msg=None):
         while True:
-                # msg = input()
-                self.sock.send_data(msg)
-                break
-
-
-
-
+            # msg = input()
+            self.sock.send_data(msg)
+            break
 
 
 class ControlScreen(Screen):
-  '''  def __init__(self, **kwargs):
-        super(ControlScreen, self).__init__(**kwargs)
-        self.text = 0
-        self.send_text = 0
-        try:
-            self.sock = MySocket()
-            Thread(target=self.send_data).start()
-            Thread(target=self.get_data).start()
-        except Exception as e:
-            print(str(e))
-            print("No Connection to server")
-            self.manager.current = "main"
-            self.manager.transition.direction = "left"
+    pass
 
-    def get_data(self):
-        while True:
-            if self.sock:
-                self.text = self.sock.get_data()
-                print(self.text.decode('utf-8'))
-                return self.text
-            else:
-                print(self.sock)
-
-
-    def send_data(self, msg=None):
-        while True:
-            if self.sock:
-                # msg = input()
-                self.sock.send_data(msg)
-                break
-            else:
-                print(self.sock)
-                break
-'''
-control = TitleWindow()
 
 class WindowManager(ScreenManager):
     pass
@@ -192,6 +154,7 @@ class MainWindow(Screen):
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
 
         self.seat = MainWindow.seat_height
+        control = self.manager.get_screen('title')
         control.send_data(str(self.seat))
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
@@ -295,6 +258,7 @@ class TestWindow(Screen):
         self.manager.get_screen(
             "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
+        control = self.manager.get_screen('title')
         self.send_text = MainWindow.seat_height
         control.send_data(str(self.send_text))
 
@@ -328,6 +292,7 @@ class TestWindow(Screen):
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
 
         self.send_text = MainWindow.seat_height
+        control = self.manager.get_screen('title')
         control.send_data(str(self.send_text))
         return MainWindow.nt
 
@@ -350,6 +315,7 @@ class LoadingWindow(Screen):  # incomplete
 
     def enable_load_button(self):
         load_screen = self.manager.get_screen("loading")
+        control = self.manager.get_screen('title')
         while True:
             try:
 
@@ -367,6 +333,28 @@ class LoadingWindow(Screen):  # incomplete
 
 
 class MaintenanceWindow(Screen):
+
+
+    def enable_test(self):
+        maintenance = self.manager.get_screen('maintenance')
+        maintenance.ids.maintenance_button_1.disabled = False
+
+        pass
+    def test_1(self):
+        maintenance = self.manager.get_screen('maintenance')
+        maintenance.ids.maintenance_button_1.disabled = True
+        maintenance.ids.maintenance_button_2.disabled = False
+        pass
+
+    def test_2(self):
+        maintenance = self.manager.get_screen('maintenance')
+        maintenance.ids.maintenance_button_2.disabled = True
+        maintenance.ids.maintenance_end.disabled = False
+        pass
+    def test_end(self):
+
+
+        pass
     pass
 
 
@@ -375,8 +363,11 @@ class ResultWindow(Screen):
 
 
 class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
+    def __init__(self, **kwargs):
+        super(ConnectionWindow, self).__init__(**kwargs)
 
     def reconnect(self):
+        control = self.manager.get_screen('title')
         try:
             control.connection()
         except WindowsError:

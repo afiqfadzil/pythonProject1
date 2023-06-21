@@ -1,11 +1,11 @@
 <WindowManager>:
+    MaintenanceWindow:
     TitleWindow:
     ConnectionWindow:
     MainWindow:
     TestWindow:
     ResultWindow:
     LoadingWindow:
-    MaintenanceWindow:
     ControlScreen:
 
 
@@ -34,9 +34,6 @@
 
 
     FloatLayout:
-
-
-
 
 
         Label :
@@ -183,6 +180,14 @@
         on_release :
             root.connection()
 
+    Button :
+        text : "Maintenance"
+        pos_hint : {"" : 0.1 , "center_y" : 0.980}
+        size_hint : 0.2,0.035
+        on_release :
+            app.root.current = "maintenance"
+            root.manager.transition.direction = "up"
+
 
 
 
@@ -214,7 +219,7 @@
         text : "Server is not available, please reconfigure the device..."
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
     Button :
-        id : return
+        id : connect_return
         text : "Return"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
         disabled : False
@@ -228,6 +233,88 @@
         on_release :
             root.reconnect()
 
+<MaintenanceWindow>
+
+    name : "maintenance"
+    Button :
+        id : maintenance_return
+        text : "戻る"
+        pos_hint : {"center_x" : 0.05 , "center_y" : 0.980}
+        on_release :
+            app.root.current = "title"
+            root.manager.transition.direction = "down"
+    Label :
+        id: maintenance_title
+        font_size : '25sp'
+        text : "メンテナンス画面"
+        underline : True
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
+    Button :
+        id : maintenance_button_start
+        font_size : '14sp'
+        size_hint :0.25 ,0.035
+        text : "座面高さ校正開始➡"
+        pos_hint : {"center_x" : 0.15 , "center_y" : 0.85}
+        on_release:
+            root.enable_test()
+
+    Label :
+        font_size : '14sp'
+        text : "1)手動で座面高さを10㎝に合わせる"
+        pos_hint : {"center_x" : 0.215 , "center_y" : 0.80}
+    Label :
+        font_size : '14sp'
+        text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
+        pos_hint : {"center_x" : 0.315 , "center_y" : 0.75}
+
+    Button :
+        id : maintenance_button_1
+        font_size : '14sp'
+        size_hint :0.20 ,0.035
+        text : "測定開始"
+        pos_hint : {"center_x" : 0.6 , "center_y" : 0.75}
+        disabled : True
+        on_release:
+            root.test_1()
 
 
+    Label :
+        font_size : '14sp'
+        text : "2)手動で座面高さを40㎝に合わせる"
+        pos_hint : {"center_x" : 0.215 , "center_y" : 0.60}
+    Label :
+        font_size : '14sp'
+        text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
+        pos_hint : {"center_x" : 0.315 , "center_y" : 0.55}
 
+    Button :
+        id : maintenance_button_2
+        font_size : '14sp'
+        size_hint :0.20 ,0.035
+        text : "測定開始"
+        pos_hint : {"center_x" : 0.6 , "center_y" : 0.55}
+        disabled : True
+        on_release:
+            root.test_2()
+
+    Label :
+        font_size : '14sp'
+        text : "座面高さ校正結果:"
+        pos_hint : {"center_x" : 0.315 , "center_y" : 0.35}
+
+    Label :
+        font_size : '14sp'
+        text : "テスト1：＿＿＿＿\nテスト2：＿＿＿＿"
+        pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
+
+
+    Button :
+        id : maintenance_end
+        font_size : '14sp'
+        size_hint :0.20 ,0.035
+        text : "測定終了"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.2}
+        disabled : True
+        on_release:
+            root.test_end()
+            app.root.current = "title"

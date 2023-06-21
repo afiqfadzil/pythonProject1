@@ -1,16 +1,13 @@
 import socket
 
-
 serversocket = socket.socket()
 
 host = "localhost"
 port = 54545
-SERVER_ADDRESS = ("localhost",54545)
+SERVER_ADDRESS = ("localhost", 54545)
 serversocket.bind(SERVER_ADDRESS)
 
 serversocket.listen(5)
-
-
 
 while True:
     try:
