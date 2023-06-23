@@ -19,7 +19,7 @@ while True:
             send_msg = "S(OK)"
             clientsocket.send(str(send_msg).encode())
             if not recv_msg:
-                print("Connection closed fu to lack of data")
+                print("Connection closed  due to  lack of data")
         clientsocket.close()
     except ConnectionResetError:
         print("Connection Reset, Waiting for new connection")

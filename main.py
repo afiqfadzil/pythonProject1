@@ -361,6 +361,8 @@ class MaintenanceWindow(Screen):
 class ResultWindow(Screen):
     pass
 
+class ExplanationWindow(Screen):
+    pass
 
 class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
     def __init__(self, **kwargs):
