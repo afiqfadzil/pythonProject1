@@ -1,7 +1,9 @@
 import socket
 from kivy.uix.label import Label
 from kivy.app import App
+from kivymd.theming import ThemeManager
 from kivy.lang import Builder
+from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.utils import platform
 from kivymd.app import MDApp
@@ -150,9 +152,18 @@ class MainWindow(Screen):
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
-        self.manager.get_screen(
-            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
-
+        # self.manager.get_screen(
+        # "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        if test_array[MainWindow.nt][1] == "One Leg":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/one_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
+        elif test_array[MainWindow.nt][1] == "Two Legs":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/two_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
         self.seat = MainWindow.seat_height
         control = self.manager.get_screen('title')
         control.send_data(str(self.seat))
@@ -175,6 +186,8 @@ class TestWindow(Screen):
         self.rating = 0
         self.cnt = 0
         self.send_text = 0
+        self.one_leg = Image(source='assets/one_leg.png')
+        self.two_leg = Image(source='assets/two_leg.png')
 
     def rating_func(self):
         self.rating = MainWindow.age - test_array[MainWindow.nt][3]
@@ -216,6 +229,10 @@ class TestWindow(Screen):
 
         pass
 
+    def change(self):
+        self.manager.get_screen(
+            "test").ids.test_image.source = 'assets/one_leg.png'
+
     def next_screen_result(self):
         if TestWindow.c == 3:
             self.manager.current = "result"
@@ -252,11 +269,23 @@ class TestWindow(Screen):
         if TestWindow.c == 2:  # FinalMarking
             self.rating = float(test_array[MainWindow.nt][3]) - float(MainWindow.age)
 
+        if test_array[MainWindow.nt][1] == "One Leg":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/one_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
+        elif test_array[MainWindow.nt][1] == "Two Legs":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/two_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+        else:
+            pass
         self.prev = 0
         TestWindow.c = TestWindow.c + 1
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        self.manager.get_screen(
-            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        #self.manager.get_screen(
+         #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
         control = self.manager.get_screen('title')
         self.send_text = MainWindow.seat_height
@@ -283,12 +312,23 @@ class TestWindow(Screen):
         if TestWindow.c == 2:  # FinalMarking
             MainWindow.nt = MainWindow.nt + 1
             self.rating = float(MainWindow.age) - float(test_array[MainWindow.nt][3])
-
+        if test_array[MainWindow.nt][1] == "One Leg":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/one_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
+        elif test_array[MainWindow.nt][1] == "Two Legs":
+            self.manager.get_screen(
+                "test").ids.test_image.source = 'assets/two_leg.png'
+            self.manager.get_screen(
+                "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+        else:
+            pass
         self.prev = 1
         TestWindow.c = TestWindow.c + 1
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        self.manager.get_screen(
-            "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        #self.manager.get_screen(
+         #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
 
         self.send_text = MainWindow.seat_height
@@ -334,12 +374,12 @@ class LoadingWindow(Screen):  # incomplete
 
 class MaintenanceWindow(Screen):
 
-
     def enable_test(self):
         maintenance = self.manager.get_screen('maintenance')
         maintenance.ids.maintenance_button_1.disabled = False
 
         pass
+
     def test_1(self):
         maintenance = self.manager.get_screen('maintenance')
         maintenance.ids.maintenance_button_1.disabled = True
@@ -351,18 +391,29 @@ class MaintenanceWindow(Screen):
         maintenance.ids.maintenance_button_2.disabled = True
         maintenance.ids.maintenance_end.disabled = False
         pass
+
     def test_end(self):
-
-
         pass
+
     pass
 
 
 class ResultWindow(Screen):
     pass
 
+
 class ExplanationWindow(Screen):
+
+
+    def connection(self):
+        control = self.manager.get_screen('title')
+        try:
+            control.connection()
+        except WindowsError:
+            print("No Connection")
+
     pass
+
 
 class ConnectionWindow(Screen):  # establish connection Here if not then have a button to retry
     def __init__(self, **kwargs):
@@ -382,13 +433,17 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
     pass
 
 
-class MyMainApp(App):
+class MyMainApp(MDApp):
     def build(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Orange"
+
         if platform == 'android' or platform == 'ios':
             Window.maximize()
         else:
             Window.size = (620, 1024)
         return WindowManager()
+
 
 
 # Press the green button in the gutter to run the script.

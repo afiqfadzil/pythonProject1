@@ -1,10 +1,10 @@
 <WindowManager>:
-    ExplanationWindow:
     TitleWindow:
+    ExplanationWindow:
+    TestWindow:
     MaintenanceWindow:
     ConnectionWindow:
     MainWindow:
-    TestWindow:
     ResultWindow:
     LoadingWindow:
     ControlScreen:
@@ -28,8 +28,9 @@
 
 
 
-<Button>:
+<MDRectangleFlatButton>:
     size_hint : 0.1,0.035
+    ripple_behaviour :True
 
 <ControlScreen>
     name : "control"
@@ -103,7 +104,7 @@
 
         Label :
             id : error_label_main
-            text : "Comment"
+            text : ""
             pos_hint : {"x":0.25,"y":0.2}
         Button :
             pos_hint : {"x":0.45,"y":0.3}
@@ -112,7 +113,13 @@
                 root.data_call()
 
 
-
+        Button :
+            text : "戻る"
+            pos_hint : {"" : 0.1 , "center_y" : 0.980}
+            size_hint : 0.2,0.035
+            on_release :
+                app.root.current = "title"
+                root.manager.transition.direction = "down"
 
 
 <TestWindow>:
@@ -121,6 +128,11 @@
         id : test2_label
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
         text :"Under Construction"
+
+    Image :
+        id : test_image
+        source : 'assets/two_leg.png'
+        pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
     Button :
         text : "成功"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
@@ -175,10 +187,12 @@
 <TitleWindow>:
     name : "title"
 
-    Label :
+    MDLabel :
         id:title_label
         text : "ロコモ年齢自動測定システムの利用について"
         font_size : '25sp'
+        size_hint_x : 1
+        halign : "center"
         underline : True
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
 
@@ -190,14 +204,15 @@
 
 
 
-    Button :
-        text : "承知しました。測定開始"
+    MDRectangleFlatButton :
+        text : "承知しました"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         size_hint : 0.3,0.05
+        ripple_behaviour :True
         on_release :
             root.connection()
 
-    Button :
+    MDRectangleFlatButton :
         text : "Maintenance"
         pos_hint : {"" : 0.1 , "center_y" : 0.980}
         size_hint : 0.2,0.035
@@ -205,7 +220,13 @@
             app.root.current = "maintenance"
             root.manager.transition.direction = "up"
 
-
+    MDRectangleFlatButton :
+        text : "説明"
+        pos_hint : {"center_x" : 0.9 , "center_y" : 0.980}
+        size_hint : 0.2,0.035
+        on_release :
+            app.root.current = "explain"
+            root.manager.transition.direction = "up"
 
 
 <LoadingWindow>:
@@ -217,7 +238,7 @@
         text : "Wait while the chair is being set up"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
 
-    Button :
+    MDRectangleFlatButton :
         id : load_button
         text : "Proceed"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
@@ -235,14 +256,14 @@
         id:connect_label
         text : "Server is not available, please reconfigure the device..."
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
-    Button :
+    MDRectangleFlatButton :
         id : connect_return
         text : "Return"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
         disabled : False
         on_release :
             root.top()
-    Button :
+    MDRectangleFlatButton :
         id : recon_button
         text : "Proceed"
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
@@ -253,7 +274,7 @@
 <MaintenanceWindow>
 
     name : "maintenance"
-    Button :
+    MDRectangleFlatButton :
         id : maintenance_return
         text : "戻る"
         pos_hint : {"center_x" : 0.05 , "center_y" : 0.980}
@@ -266,7 +287,7 @@
         text : "メンテナンス画面"
         underline : True
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
-    Button :
+    MDRectangleFlatButton :
         id : maintenance_button_start
         font_size : '14sp'
         size_hint :0.25 ,0.035
@@ -284,7 +305,7 @@
         text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.75}
 
-    Button :
+    MDRectangleFlatButton :
         id : maintenance_button_1
         font_size : '14sp'
         size_hint :0.20 ,0.035
@@ -304,7 +325,7 @@
         text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.55}
 
-    Button :
+    MDRectangleFlatButton :
         id : maintenance_button_2
         font_size : '14sp'
         size_hint :0.20 ,0.035
@@ -325,7 +346,7 @@
         pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
 
 
-    Button :
+    MDRectangleFlatButton :
         id : maintenance_end
         font_size : '14sp'
         size_hint :0.20 ,0.035
@@ -356,22 +377,26 @@
     Label :
         text : " ➡立上がり結果：\n   立ち上がりの結果はご自分で判断し，画面の「成功」または\n   「失敗」のボターンをクリックしてください． 「やり直し」を\n   クリックした場合，１回の直しはできます．"
         pos_hint : {"center_x" : 0.45, "center_y" :0.55}
+    Label :
+        text : "➡座面高さ調整：\n   座面高さは測定結果に応じて自動調整します．座ったままで\n    画面に指示に従ってください． "
+        pos_hint : {"center_x" : 0.45, "center_y" :0.45}
 
 
 
 
 
-    Button :
+    MDRectangleFlatButton :
         text : "承知しました。測定開始"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         size_hint : 0.3,0.05
+
         on_release :
             root.connection()
 
-    Button :
-        text : "Maintenance"
+    MDRectangleFlatButton :
+        text : "戻る"
         pos_hint : {"" : 0.1 , "center_y" : 0.980}
         size_hint : 0.2,0.035
         on_release :
-            app.root.current = "maintenance"
-            root.manager.transition.direction = "up"
+            app.root.current = "title"
+            root.manager.transition.direction = "down"
