@@ -19,6 +19,9 @@ from client import *
 from threading import Thread
 import threading
 from time import sleep
+from kivy.core.text import LabelBase
+
+LabelBase.register(name='takao', fn_regular="TakaoPGothic.ttf")
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -57,11 +60,11 @@ class TitleWindow(Screen):  # connection to server may start here
 
     def connection(self):
         try:
-            self.sock = MySocket()
+            self.sock = MySocket(host=AddressScreen.ip)
             print(self.sock)
             Thread(target=self.send_data).start()
             Thread(target=self.get_data).start()
-            self.manager.current = "main"
+            self.manager.current = "title"
             self.manager.transition.direction = "left"
         except Exception as e:
             print(str(e))
@@ -82,8 +85,20 @@ class TitleWindow(Screen):  # connection to server may start here
             break
 
 
-class ControlScreen(Screen):
-    pass
+class AddressScreen(Screen):
+    def __init__(self, **kwargs):
+        super(AddressScreen, self).__init__(**kwargs)
+
+    def connect(self):
+        title = self.manager.get_screen("title")
+        address = self.manager.get_screen("address")
+        AddressScreen.ip = address.ids.ip.text
+
+        try:
+            title.connection()
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
 
 class WindowManager(ScreenManager):
@@ -166,7 +181,13 @@ class MainWindow(Screen):
                 "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
         self.seat = MainWindow.seat_height
         control = self.manager.get_screen('title')
-        control.send_data(str(self.seat))
+        try:
+            control.send_data(str(self.seat))
+        except Exception as e:
+            print(str(e))
+            sleep(0.1)
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
 
@@ -284,12 +305,16 @@ class TestWindow(Screen):
         self.prev = 0
         TestWindow.c = TestWindow.c + 1
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        #self.manager.get_screen(
-         #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        # self.manager.get_screen(
+        #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
         control = self.manager.get_screen('title')
         self.send_text = MainWindow.seat_height
-        control.send_data(str(self.send_text))
+        try:
+            control.send_data(str(self.send_text))
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
     def failed(self):
         if TestWindow.c < 2:
@@ -327,13 +352,19 @@ class TestWindow(Screen):
         self.prev = 1
         TestWindow.c = TestWindow.c + 1
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        #self.manager.get_screen(
-         #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
+        # self.manager.get_screen(
+        #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
 
         self.send_text = MainWindow.seat_height
         control = self.manager.get_screen('title')
-        control.send_data(str(self.send_text))
+        try:
+            control.send_data(str(self.send_text))
+        except Exception as e:
+            print(str(e))
+            sleep(0.1)
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
         return MainWindow.nt
 
     pass
@@ -404,7 +435,6 @@ class ResultWindow(Screen):
 
 class ExplanationWindow(Screen):
 
-
     def connection(self):
         control = self.manager.get_screen('title')
         try:
@@ -427,7 +457,7 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
             print("No Connection")
 
     def top(self):
-        self.manager.current = "title"
+        self.manager.current = "address"
         self.manager.transition.direction = "up"
 
     pass
@@ -443,7 +473,6 @@ class MyMainApp(MDApp):
         else:
             Window.size = (620, 1024)
         return WindowManager()
-
 
 
 # Press the green button in the gutter to run the script.

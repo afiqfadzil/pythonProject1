@@ -1,13 +1,15 @@
 <WindowManager>:
+    AddressScreen:
+    MainWindow:
+
     TitleWindow:
     ExplanationWindow:
     TestWindow:
     MaintenanceWindow:
     ConnectionWindow:
-    MainWindow:
+
     ResultWindow:
     LoadingWindow:
-    ControlScreen:
     ExplanationWindow:
 
 
@@ -17,10 +19,20 @@
 
 
 
+<MDTextField> :
+
+    multiline : False
+    size_hint_x : 0.3
+    font_size :'20sp'
+    font_name: "meiryo.ttc"
+    font_name_helper_text : "meiryo.ttc"
+    helper_text_mode : "on_focus"
+
+
 
 
 <Label>:
-    size_hint : 0.15,0.035
+    size_hint : 0.15,0.045
     font_name: "meiryo.ttc"
     font_size : '16sp'
 <TextInput>:
@@ -32,8 +44,28 @@
     size_hint : 0.1,0.035
     ripple_behaviour :True
 
-<ControlScreen>
-    name : "control"
+<AddressScreen>
+    name : "address"
+    FloatLayout:
+        MDTextField :
+            id : ip
+            hint_text:"IP アドレス"
+            multiline : False
+            size_hint_x : 0.3
+            helper_text :"e.g : 127.0.0.1"
+
+            max_height : dp(100)
+
+            pos_hint : {"x":0.45,"y":0.75}
+        Label :
+            text : "IPアドレス:"
+            pos_hint : {"x":0.25,"y":0.75}
+        MDRectangleFlatButton:
+            pos_hint : {"x":0.45,"y":0.3}
+            text : "Start"
+            on_release :
+                root.connect()
+
 
 
 
@@ -50,28 +82,31 @@
             pos_hint : {"x":0.25,"y":0.75}
 
 
-        TextInput :
+        MDTextField :
             id : age
             multiline : False
-            size_hint : 0.5,0.040
+            hint_text:"必須"
+
+
             pos_hint : {"x":0.45,"y":0.75}
 
         Label :
             text : "身長:"
             pos_hint : {"x":0.25,"y":0.65}
 
-        TextInput :
+
+        MDTextField :
             id : ht
             multiline : False
-            size_hint : 0.5,0.040
             pos_hint : {"x":0.45,"y":0.65}
+            hint_text:"必須"
 
         Label:
             text:"性別:"
             pos_hint : {"x":0.25,"y":0.55}
         Label:
             text:"男性"
-            pos_hint : {"x":0.4,"y":0.55}
+            pos_hint : {"x":0.4,"y":0.545}
         CheckBox:
             id: male_gender
             group: "gender"
@@ -80,7 +115,7 @@
             size_hint : 0.15,0.035
         Label:
             text:"女性"
-            pos_hint : {"x":0.55,"y":0.55}
+            pos_hint : {"x":0.55,"y":0.545}
         CheckBox:
             id: female_gender
             group: "gender"
@@ -89,7 +124,7 @@
             size_hint : 0.15,0.035
         Label:
             text:"他の"
-            pos_hint : {"x":0.70,"y":0.55}
+            pos_hint : {"x":0.70,"y":0.545}
         CheckBox:
             id: other_gender
             group: "gender"
@@ -106,14 +141,14 @@
             id : error_label_main
             text : ""
             pos_hint : {"x":0.25,"y":0.2}
-        Button :
+        MDRectangleFlatButton :
             pos_hint : {"x":0.45,"y":0.3}
             text : "Start"
             on_release :
                 root.data_call()
 
 
-        Button :
+        MDRectangleFlatButton :
             text : "戻る"
             pos_hint : {"" : 0.1 , "center_y" : 0.980}
             size_hint : 0.2,0.035
@@ -133,7 +168,7 @@
         id : test_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
-    Button :
+    MDRectangleFlatButton:
         text : "成功"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
         on_release :
@@ -145,7 +180,7 @@
 
 
 
-    Button :
+    MDRectangleFlatButton :
         text : "失敗"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         on_release :
@@ -154,7 +189,7 @@
             root.next_screen_loading()
             root.next_screen_result()
 
-    Button :
+    MDRectangleFlatButton :
         text : "やり直し"
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
 
@@ -177,7 +212,7 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
 
 
-    Button :
+    MDRectangleFlatButton :
         text : "End"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         on_release :
@@ -210,7 +245,8 @@
         size_hint : 0.3,0.05
         ripple_behaviour :True
         on_release :
-            root.connection()
+            app.root.current = "main"
+            root.manager.transition.direction = "left"
 
     MDRectangleFlatButton :
         text : "Maintenance"
@@ -391,7 +427,8 @@
         size_hint : 0.3,0.05
 
         on_release :
-            root.connection()
+            app.root.current = "main"
+            root.manager.transition.direction = "left"
 
     MDRectangleFlatButton :
         text : "戻る"
