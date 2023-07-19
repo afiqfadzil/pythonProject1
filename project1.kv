@@ -1,19 +1,23 @@
 <WindowManager>:
     AddressScreen:
+    ExplanationWindow:
+    TitleWindow:
     MainWindow:
 
-    TitleWindow:
+    MaintenanceWindow:
     ExplanationWindow:
     TestWindow:
-    MaintenanceWindow:
     ConnectionWindow:
-
     ResultWindow:
     LoadingWindow:
-    ExplanationWindow:
 
 
 
+<MDLabel> :
+    color: 1, 1, 1, 1
+
+    font_name: "meiryo.ttc"
+    font_size : '20sp'
 
 
 
@@ -29,12 +33,20 @@
     helper_text_mode : "on_focus"
 
 
+<canvas.before>
+    Color:
+        rgba:(29/255,62/255,89/255,1)
+    Rectangle:
+        pos : self.pos
+        size : self.size
+
 
 
 <Label>:
     size_hint : 0.15,0.045
     font_name: "meiryo.ttc"
     font_size : '16sp'
+
 <TextInput>:
     font_size : '20sp'
 
@@ -43,8 +55,10 @@
 <MDRectangleFlatButton>:
     size_hint : 0.1,0.035
     ripple_behaviour :True
+    md_bg_color : 1,1,1,1
 
 <AddressScreen>
+
     name : "address"
     FloatLayout:
         MDTextField :
@@ -53,11 +67,14 @@
             multiline : False
             size_hint_x : 0.3
             helper_text :"e.g : 127.0.0.1"
+            icon_left: 'key-variant'
+            normal_color: app.theme_cls.accent_color
+            color_active: 211/255, 211/255, 211/255, 1
 
             max_height : dp(100)
 
             pos_hint : {"x":0.45,"y":0.75}
-        Label :
+        MDLabel :
             text : "IPアドレス:"
             pos_hint : {"x":0.25,"y":0.75}
         MDRectangleFlatButton:
@@ -70,6 +87,12 @@
 
 
 <MainWindow>:
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "main"
 
 
@@ -77,8 +100,10 @@
     FloatLayout:
 
 
-        Label :
-            text : "年齢:"
+        MDLabel :
+            theme_text_color: 'Custom'
+            text_color: 0, 0, 0, 1
+            text : "年齢 :"
             pos_hint : {"x":0.25,"y":0.75}
 
 
@@ -86,13 +111,15 @@
             id : age
             multiline : False
             hint_text:"必須"
+            helper_text: "13~150"
 
 
             pos_hint : {"x":0.45,"y":0.75}
 
-        Label :
+        MDLabel :
             text : "身長:"
             pos_hint : {"x":0.25,"y":0.65}
+
 
 
         MDTextField :
@@ -100,11 +127,12 @@
             multiline : False
             pos_hint : {"x":0.45,"y":0.65}
             hint_text:"必須"
+            helper_text : "Max 2.50m"
 
-        Label:
+        MDLabel:
             text:"性別:"
             pos_hint : {"x":0.25,"y":0.55}
-        Label:
+        MDLabel:
             text:"男性"
             pos_hint : {"x":0.4,"y":0.545}
         CheckBox:
@@ -113,7 +141,7 @@
             active: False
             pos_hint: {"x":0.45,"y":0.55}
             size_hint : 0.15,0.035
-        Label:
+        MDLabel:
             text:"女性"
             pos_hint : {"x":0.55,"y":0.545}
         CheckBox:
@@ -122,7 +150,7 @@
             active: False
             pos_hint: {"x":0.60,"y":0.55}
             size_hint : 0.15,0.035
-        Label:
+        MDLabel:
             text:"他の"
             pos_hint : {"x":0.70,"y":0.545}
         CheckBox:
@@ -137,7 +165,7 @@
 
 
 
-        Label :
+        MDLabel :
             id : error_label_main
             text : ""
             pos_hint : {"x":0.25,"y":0.2}
@@ -158,8 +186,14 @@
 
 
 <TestWindow>:
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "test"
-    Label :
+    MDLabel :
         id : test2_label
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
         text :"Under Construction"
@@ -197,16 +231,22 @@
 
 
 <ResultWindow>:
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "result"
-    Label :
+    MDLabel :
         id:result_label_comment
         text : "You Old"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
-    Label :
+    MDLabel :
         id:result_label_age
         text : "You Old"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.45}
-    Label :
+    MDLabel :
         id:result_label_rage
         text : "You Old"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
@@ -220,6 +260,12 @@
             root.manager.transition.direction = "up"
 
 <TitleWindow>:
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "title"
 
     MDLabel :
@@ -232,9 +278,10 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
 
 
-    Label :
-        text : "       測定結果とコメントについてこのロコモ年齢測定シ\nステムは立ち上がり能力からあなたの基礎移動能力の現状と年齢\nに伴う衰退の傾向の予測を行います.測定結果には個人によって\n誤差があり，その評価やコメントは今後の基礎能力維持のための\n参考としてご認識いただけますようお願いします．\n     測定中の事故について本測定システムは安全性の面において，\nできる限りの工夫を行い，市販の電動症候椅子の安全基準を持して\nおりますが，被測者の基礎運動機能の低下や無理な立上がり等による\n転倒の恐れがあります．万が一，転倒による怪我が生じた場合，研究\n開発側は一切の責任を負いかねますのであらかじめご了承ください."
-        pos_hint : {"center_x" : 0.5, "center_y" : 0.6}
+    MDLabel :
+        text : "       測定結果とコメントについてこのロコモ年齢測定システム\nは立ち上がり能力からあなたの基礎移動能力の現状と年齢\nに伴う衰退の傾向の予測を行います.測定結果には個人によって\n誤差があり，その評価やコメントは今後の基礎能力維持のための\n参考としてご認識いただけますようお願いします．\n     測定中の事故について本測定システムは安全性の面において，\nできる限りの工夫を行い，市販の電動症候椅子の安全基準を持して\nおりますが，被測者の基礎運動機能の低下や無理な立上がり等による\n転倒の恐れがあります．万が一，転倒による怪我が生じた場合，研究\n開発側は一切の責任を負いかねますのであらかじめご了承ください."
+        pos_hint : {"center_x" : 0.6, "center_y" : 0.6}
+        size_hint_x : 1
 
 
 
@@ -249,12 +296,11 @@
             root.manager.transition.direction = "left"
 
     MDRectangleFlatButton :
-        text : "Maintenance"
+        text : "メンテナンス"
         pos_hint : {"" : 0.1 , "center_y" : 0.980}
         size_hint : 0.2,0.035
         on_release :
-            app.root.current = "maintenance"
-            root.manager.transition.direction = "up"
+            root.start_maintenance()
 
     MDRectangleFlatButton :
         text : "説明"
@@ -266,10 +312,16 @@
 
 
 <LoadingWindow>:
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "loading"
     on_enter:
         root.enable_load_button()
-    Label :
+    MDLabel :
         id:loading_label
         text : "Wait while the chair is being set up"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
@@ -287,11 +339,19 @@
 
 
 <ConnectionWindow>
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "connect"
-    Label :
+    MDLabel :
         id:connect_label
-        text : "Server is not available, please reconfigure the device..."
+        text : "サーバーとの接続が切断されています.接続状況を確認してください"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        halign : "center"
+        size_hint_x : 1.2
     MDRectangleFlatButton :
         id : connect_return
         text : "Return"
@@ -308,6 +368,12 @@
             root.reconnect()
 
 <MaintenanceWindow>
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
 
     name : "maintenance"
     MDRectangleFlatButton :
@@ -315,9 +381,8 @@
         text : "戻る"
         pos_hint : {"center_x" : 0.05 , "center_y" : 0.980}
         on_release :
-            app.root.current = "title"
-            root.manager.transition.direction = "down"
-    Label :
+            root.exit()
+    MDLabel :
         id: maintenance_title
         font_size : '25sp'
         text : "メンテナンス画面"
@@ -332,11 +397,11 @@
         on_release:
             root.enable_test()
 
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "1)手動で座面高さを10㎝に合わせる"
         pos_hint : {"center_x" : 0.215 , "center_y" : 0.80}
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.75}
@@ -352,11 +417,11 @@
             root.test_1()
 
 
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "2)手動で座面高さを40㎝に合わせる"
         pos_hint : {"center_x" : 0.215 , "center_y" : 0.60}
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "現在の座面高さ＿＿＿＿＿㎝\n座面の測定高さ＿＿＿＿＿㎝"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.55}
@@ -371,12 +436,12 @@
         on_release:
             root.test_2()
 
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "座面高さ校正結果:"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.35}
 
-    Label :
+    MDLabel :
         font_size : '14sp'
         text : "テスト1：＿＿＿＿\nテスト2：＿＿＿＿"
         pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
@@ -394,28 +459,44 @@
             app.root.current = "title"
 
 <ExplanationWindow>
+    canvas.before:
+        Color:
+            rgba:(29/255,62/255,89/255,1)
+        Rectangle:
+            pos : self.pos
+            size : self.size
     name : "explain"
 
-    Label :
+    MDLabel :
         id:title_label
         text : "測定姿勢と立上がり動作の説明"
         font_size : '25sp'
         underline : True
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
+        size_hint_x : 1
+        halign :"center"
 
 
-    Label :
-        text : " ➡立上がり姿勢：\n   立上がりは右の絵のような姿勢で，背中を背もたれに当て\n   て，両手を胸の前に組み，両足または片足で行います．片足の\n   場合は右足と左足のどちらでも良いです．\n     踵は立ち上がりしやすいように，後ろに引いて置いてくださ\n   い．脛と地面の角度は約70°となります\n    "
-        pos_hint : {"center_x" : 0.45, "center_y" :0.8}
-    Label :
-        text : "➡ 立上がり動作：\n   無理なく，ゆっくり立上がり，そのままを３秒程度維持して\n   ください．その後椅子に座り，結果を選んでください\n   "
-        pos_hint : {"center_x" : 0.45, "center_y" :0.65}
-    Label :
-        text : " ➡立上がり結果：\n   立ち上がりの結果はご自分で判断し，画面の「成功」または\n   「失敗」のボターンをクリックしてください． 「やり直し」を\n   クリックした場合，１回の直しはできます．"
-        pos_hint : {"center_x" : 0.45, "center_y" :0.55}
-    Label :
-        text : "➡座面高さ調整：\n   座面高さは測定結果に応じて自動調整します．座ったままで\n    画面に指示に従ってください． "
-        pos_hint : {"center_x" : 0.45, "center_y" :0.45}
+    MDLabel :
+        text : "➡立上がり姿勢：\n        立上がりは右の絵のような姿勢で，背中を背もたれに当て\n    て，両手を胸の前に組み，両足または片足で行います．片足の\n    場合は右足と左足のどちらでも良いです．\n       踵は立ち上がりしやすいように，後ろに引いて置いてくださ\n    い．脛と地面の角度は約70°となります\n    "
+        pos_hint : {"center_x" : 0.7, "center_y" :0.75}
+        size_hint_x : 1.2
+        halign :"left"
+    MDLabel :
+        text : "➡ 立上がり動作：\n       無理なく，ゆっくり立上がり，そのままを３秒程度維持して\n   ください．その後椅子に座り，結果を選んでください\n   "
+        pos_hint : {"center_x" : 0.7, "center_y" :0.62}
+        size_hint_x : 1.2
+        halign :"left"
+    MDLabel :
+        text : "➡立上がり結果：\n        立ち上がりの結果はご自分で判断し，画面の「成功」または\n  「失敗」のボターンをクリックしてください． 「やり直し」を\n   クリックした場合，１回の直しはできます．"
+        pos_hint : {"center_x" : 0.7, "center_y" :0.52}
+        size_hint_x : 1.2
+        halign :"left"
+    MDLabel :
+        text : "➡座面高さ調整：\n        座面高さは測定結果に応じて自動調整します．座ったままで\n   画面に指示に従ってください． "
+        pos_hint : {"center_x" : 0.7, "center_y" :0.40}
+        size_hint_x : 1.2
+        halign :"left"
 
 
 

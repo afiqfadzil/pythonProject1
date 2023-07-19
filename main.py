@@ -20,6 +20,7 @@ from threading import Thread
 import threading
 from time import sleep
 from kivy.core.text import LabelBase
+import kivymd.uix.textfield
 
 LabelBase.register(name='takao', fn_regular="TakaoPGothic.ttf")
 
@@ -32,7 +33,7 @@ test_array = [[], [0.5, "One Leg", 100, 16.00], [0.5, "One Leg", 95, 27.95], [0.
               [0.5, "Two Legs", 65, 99.65], [0.625, "Two Legs", 60, 111.6], [0.75, "Two Legs", 55, 123.55],
               [0.875, "Two Legs", 50, 135.5],
               [1.0, "Two Legs", 45, 147.45], [1.125, "Two Legs", 40, 159.4], [1.25, "Two Legs", 35, 171.35]]
-Builder.load_file("my.kv")
+Builder.load_file("project1.kv")
 Config.set('graphics', 'resizable', '0')  # 0 being off 1 being on as in true/false
 Config.set('graphics', 'width', '700')
 Config.set('graphics', 'height', '1000')
@@ -57,6 +58,19 @@ class TitleWindow(Screen):  # connection to server may start here
     def next_screen(self):
         self.manager.current = "main"
         self.manager.transition.direction = "up"
+
+    def start_maintenance(self):
+        control = self.manager.get_screen('title')
+        connect = self.manager.get_screen('connect')
+        try:
+            control.send_data("MAINTENANCE")
+            self.manager.current = "maintenance"
+            self.manager.transition.direction = "up"
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
+
+            pass
 
     def connection(self):
         try:
@@ -123,8 +137,17 @@ class MainWindow(Screen):
 
         test1_screen = self.manager.get_screen("test")
         main_screen = self.manager.get_screen("main")
+        control = self.manager.get_screen('title')
 
-        # Collect all the data from the Text Input Field in "my.kv"
+        try:
+            control.send_data("START")
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
+
+
+
+        # Collect all the data from the Text Input Field in "project1.kv"
 
         ht_text = main_screen.ids.ht.text
 
@@ -180,7 +203,6 @@ class MainWindow(Screen):
             self.manager.get_screen(
                 "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
         self.seat = MainWindow.seat_height
-        control = self.manager.get_screen('title')
         try:
             control.send_data(str(self.seat))
         except Exception as e:
@@ -405,9 +427,16 @@ class LoadingWindow(Screen):  # incomplete
 
 class MaintenanceWindow(Screen):
 
+    def __init__(self, **kw):
+        super(MaintenanceWindow, self).__init__(**kw)
+        self.response = 0
+
+
+    # Send Maintenance command code to the server to run maintenance mode
+
     def enable_test(self):
-        maintenance = self.manager.get_screen('maintenance')
-        maintenance.ids.maintenance_button_1.disabled = False
+        self.maintenance = self.manager.get_screen('maintenance')
+        self.maintenance.ids.maintenance_button_1.disabled = False
 
         pass
 
@@ -427,6 +456,19 @@ class MaintenanceWindow(Screen):
         pass
 
     pass
+    def exit(self):
+        try:
+            control = self.manager.get_screen('title')
+            control.send_data("EXIT")
+            self.manager.current = "title"
+            self.manager.transition.direction = "down"
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
+
+
+
+
 
 
 class ResultWindow(Screen):
@@ -466,7 +508,12 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
 class MyMainApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Orange"
+        self.theme_cls.primary_palette = "Orange"  # Choose a darker color palette, like "Gray"
+        self.theme_cls.primary_hue = "800"
+        self.theme_cls.secondary_palette = "Grey"
+        self.theme_cls.accent_color
+
+
 
         if platform == 'android' or platform == 'ios':
             Window.maximize()
