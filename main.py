@@ -45,6 +45,21 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
 
+class TextWindow(Screen):
+    def press(self):
+        data = self.manager.get_screen('text')
+        name = data.ids.name.text
+        email = data.ids.email.text
+        with open("calculation.txt", mode="w") as myfile:
+            myfile.writelines(f"{name},{email}\n")
+            print("Name: ", name, "\nEmail: ", email, "\nADDED!")
+
+        data.ids.name.text = ""
+        data.ids.email.text = ""
+
+    pass
+
+
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
 # configure so that the program do not crash if not connected to a server
@@ -76,8 +91,8 @@ class TitleWindow(Screen):  # connection to server may start here
         try:
             self.sock = MySocket(host=AddressScreen.ip)
             print(self.sock)
-            Thread(target=self.send_data).start()
-            Thread(target=self.get_data).start()
+            #Thread(target=self.send_data).start()
+            #Thread(target=self.get_data).start()
             self.manager.current = "title"
             self.manager.transition.direction = "left"
         except Exception as e:
@@ -88,9 +103,8 @@ class TitleWindow(Screen):  # connection to server may start here
 
     def get_data(self):
         while True:
-            self.text = self.sock.get_data()
-            print(self.text.decode('utf-8'))
-            return self.text
+            print("GET SCREEN")
+            return self.sock.get_data()
 
     def send_data(self, msg=None):
         while True:
@@ -144,8 +158,6 @@ class MainWindow(Screen):
         except Exception as e:
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
-
-
 
         # Collect all the data from the Text Input Field in "project1.kv"
 
@@ -413,6 +425,7 @@ class LoadingWindow(Screen):  # incomplete
             try:
 
                 self.response = control.get_data()
+                print("loadingwindow")
                 if self.response.decode('utf-8') == "OK":
                     print(self.response.decode('utf-8'))
                     sleep(1)
@@ -420,7 +433,8 @@ class LoadingWindow(Screen):  # incomplete
                     break
                 else:
                     print("Wrong Data")
-                    print(self.response)
+                    print(self.response.decode('utf-8'))
+                    control.send_data("WAIT")
             finally:
                 pass
 
@@ -430,32 +444,47 @@ class MaintenanceWindow(Screen):
     def __init__(self, **kw):
         super(MaintenanceWindow, self).__init__(**kw)
         self.response = 0
-
+        self.a = 0
+        self.b = 0
+        self.v2 = 0
+        self.v1 = 0
 
     # Send Maintenance command code to the server to run maintenance mode
 
-    def enable_test(self):
-        self.maintenance = self.manager.get_screen('maintenance')
-        self.maintenance.ids.maintenance_button_1.disabled = False
+    def set_button_state(self, button_name, state):
+        maintenance = self.manager.get_screen('maintenance')
+        maintenance.ids[button_name].disabled = state
 
-        pass
+    def get_data(self):
+        control = self.manager.get_screen('title')
+        return control.get_data()
+
+    def enable_test(self):
+        self.set_button_state('maintenance_button_1', False)
 
     def test_1(self):
-        maintenance = self.manager.get_screen('maintenance')
-        maintenance.ids.maintenance_button_1.disabled = True
-        maintenance.ids.maintenance_button_2.disabled = False
-        pass
+        self.set_button_state('maintenance_button_1', True)
+        self.set_button_state('maintenance_button_2', False)
+        try:
+            self.v1 = self.get_data()
+        finally:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
     def test_2(self):
-        maintenance = self.manager.get_screen('maintenance')
-        maintenance.ids.maintenance_button_2.disabled = True
-        maintenance.ids.maintenance_end.disabled = False
-        pass
+        self.set_button_state('maintenance_button_2', True)
+        self.set_button_state('maintenance_end', False)
+        try:
+            self.v2 = self.get_data()
+        finally:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
+        self.a = (40 - 10) / (self.v2 - self.v1)
+        self.b = (10 * self.v2 - 40 * self.v1) / (self.v2 - self.v1)
 
     def test_end(self):
         pass
 
-    pass
     def exit(self):
         try:
             control = self.manager.get_screen('title')
@@ -466,9 +495,17 @@ class MaintenanceWindow(Screen):
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
 
+    pass
 
-
-
+    def exit(self):
+        try:
+            control = self.manager.get_screen('title')
+            control.send_data("EXIT")
+            self.manager.current = "title"
+            self.manager.transition.direction = "down"
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
 
 class ResultWindow(Screen):
@@ -512,8 +549,6 @@ class MyMainApp(MDApp):
         self.theme_cls.primary_hue = "800"
         self.theme_cls.secondary_palette = "Grey"
         self.theme_cls.accent_color
-
-
 
         if platform == 'android' or platform == 'ios':
             Window.maximize()
