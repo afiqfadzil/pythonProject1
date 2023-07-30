@@ -103,8 +103,8 @@ class TitleWindow(Screen):  # connection to server may start here
 
     def get_data(self):
         while True:
-            print("GET SCREEN")
             return self.sock.get_data()
+
 
     def send_data(self, msg=None):
         while True:
@@ -339,12 +339,11 @@ class TestWindow(Screen):
         self.prev = 0
         TestWindow.c = TestWindow.c + 1
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        # self.manager.get_screen(
-        #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
         control = self.manager.get_screen('title')
         self.send_text = MainWindow.seat_height
         try:
+            control.send_data("START")
             control.send_data(str(self.send_text))
         except Exception as e:
             self.manager.current = "connect"
@@ -393,6 +392,7 @@ class TestWindow(Screen):
         self.send_text = MainWindow.seat_height
         control = self.manager.get_screen('title')
         try:
+            control.send_data("START")
             control.send_data(str(self.send_text))
         except Exception as e:
             print(str(e))
@@ -425,7 +425,6 @@ class LoadingWindow(Screen):  # incomplete
             try:
 
                 self.response = control.get_data()
-                print("loadingwindow")
                 if self.response.decode('utf-8') == "OK":
                     print(self.response.decode('utf-8'))
                     sleep(1)
@@ -434,7 +433,6 @@ class LoadingWindow(Screen):  # incomplete
                 else:
                     print("Wrong Data")
                     print(self.response.decode('utf-8'))
-                    control.send_data("WAIT")
             finally:
                 pass
 
