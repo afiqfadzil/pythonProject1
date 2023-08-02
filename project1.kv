@@ -3,7 +3,6 @@
     AddressScreen:
     MaintenanceWindow:
     TextWindow:
-    ExplanationWindow:
     TitleWindow:
     MainWindow:
     ExplanationWindow:
@@ -101,7 +100,7 @@
     FloatLayout:
         MDTextField :
             id : ip
-            text:"localhost"
+            text:"192.168.5.1"
             hint_text:"IP アドレス"
             multiline : False
             size_hint_x : 0.3
@@ -422,8 +421,9 @@
         size_hint_x :1.3
         halign :"center"
     MDLabel :
+        id : test1
         font_size : '14sp'
-        text : "現在の座面高さ＿＿＿＿＿㎝"
+        text : "現在の座面高さ＿＿㎝"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.75}
         size_hint_x :1
         halign :"center"
@@ -433,7 +433,7 @@
         font_size : '14sp'
         size_hint :0.20 ,0.035
         text : "測定開始"
-        pos_hint : {"center_x" : 0.6 , "center_y" : 0.77}
+        pos_hint : {"center_x" : 0.6 , "center_y" : 0.75}
         disabled : True
         on_release:
             root.test_1()
@@ -446,8 +446,9 @@
         size_hint_x :1
         halign :"center"
     MDLabel :
+        id : test2
         font_size : '14sp'
-        text : "現在の座面高さ＿＿＿＿＿㎝\n"
+        text : "現在の座面高さ＿＿㎝\n"
         pos_hint : {"center_x" : 0.315 , "center_y" : 0.55}
         size_hint_x :1
         halign :"center"
@@ -457,7 +458,7 @@
         font_size : '14sp'
         size_hint :0.20 ,0.035
         text : "測定開始"
-        pos_hint : {"center_x" : 0.6 , "center_y" : 0.57}
+        pos_hint : {"center_x" : 0.6 , "center_y" : 0.55}
         disabled : True
         on_release:
             root.test_2()
@@ -470,8 +471,9 @@
         halign :"center"
 
     MDLabel :
+        id : result
         font_size : '14sp'
-        text : "テスト1：＿＿＿＿\nテスト2：＿＿＿＿"
+        text : "A：＿＿\nB：＿＿"
         pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
         size_hint_x :1
         halign :"center"
@@ -485,8 +487,7 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.2}
         disabled : True
         on_release:
-            root.test_end()
-            app.root.current = "title"
+            root.exit()
 
 <ExplanationWindow>
 

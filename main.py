@@ -1,26 +1,17 @@
-import socket
-from kivy.uix.label import Label
-from kivy.app import App
-from kivymd.theming import ThemeManager
 from kivy.lang import Builder
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.utils import platform
 from kivymd.app import MDApp
-from kivy.uix.widget import Widget
+
 from kivy.core.window import Window
-from kivy.uix.slider import Slider
-from kivy.uix.dropdown import DropDown
-from kivy.properties import ObjectProperty
-from kivy.uix.floatlayout import FloatLayout
+
 from kivy.config import Config
-from kivy.uix.checkbox import CheckBox
+
 from client import *
-from threading import Thread
-import threading
+
 from time import sleep
 from kivy.core.text import LabelBase
-import kivymd.uix.textfield
 
 LabelBase.register(name='takao', fn_regular="TakaoPGothic.ttf")
 
@@ -75,10 +66,7 @@ class TitleWindow(Screen):  # connection to server may start here
         self.manager.transition.direction = "up"
 
     def start_maintenance(self):
-        control = self.manager.get_screen('title')
-        connect = self.manager.get_screen('connect')
         try:
-            control.send_data("MAINTENANCE")
             self.manager.current = "maintenance"
             self.manager.transition.direction = "up"
         except Exception as e:
@@ -91,8 +79,8 @@ class TitleWindow(Screen):  # connection to server may start here
         try:
             self.sock = MySocket(host=AddressScreen.ip)
             print(self.sock)
-            #Thread(target=self.send_data).start()
-            #Thread(target=self.get_data).start()
+            # Thread(target=self.send_data).start()
+            # Thread(target=self.get_data).start()
             self.manager.current = "title"
             self.manager.transition.direction = "left"
         except Exception as e:
@@ -104,7 +92,6 @@ class TitleWindow(Screen):  # connection to server may start here
     def get_data(self):
         while True:
             return self.sock.get_data()
-
 
     def send_data(self, msg=None):
         while True:
@@ -146,6 +133,7 @@ class MainWindow(Screen):
         MainWindow.std_height = 0  # Capital H
 
         self.seat = 0
+
 
     def data_call(self):
 
@@ -202,8 +190,6 @@ class MainWindow(Screen):
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
-        # self.manager.get_screen(
-        # "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
         if test_array[MainWindow.nt][1] == "One Leg":
             self.manager.get_screen(
                 "test").ids.test_image.source = 'assets/one_leg.png'
@@ -300,108 +286,113 @@ class TestWindow(Screen):
             self.manager.transition.direction = "left"
 
     def passed(self):
-        if TestWindow.c < 2:
-            if TestWindow.c == 0:  # Pass
-                # Send Data to python to adjust Seat Height
-                MainWindow.nt = MainWindow.nt - 2
-                # if nt score is lower than 1 set MainWindow.nt == 1
+        if TestWindow.c < 3:
+            if TestWindow.c < 3:
+                if TestWindow.c == 0:  # Pass
+                    # Send Data to python to adjust Seat Height
+                    MainWindow.nt = MainWindow.nt - 2
+                    # if nt score is lower than 1 set MainWindow.nt == 1
 
-                if MainWindow.nt < 1:
-                    MainWindow.nt = 1
-
-
-            elif TestWindow.c == 1 and int(self.prev) == 0:  # PassPass
-                MainWindow.nt = MainWindow.nt - 2
-                if MainWindow.nt < 1:
-                    MainWindow.nt = 1
+                    if MainWindow.nt < 1:
+                        MainWindow.nt = 1
 
 
-            elif TestWindow.c == 1 and int(self.prev) == 1:  # FailPass
-                MainWindow.nt = MainWindow.nt - 1
-                if MainWindow.nt < 1:
-                    MainWindow.nt = 1
+                elif TestWindow.c == 1 and int(self.prev) == 0:  # PassPass
+                    MainWindow.nt = MainWindow.nt - 2
+                    if MainWindow.nt < 1:
+                        MainWindow.nt = 1
 
-        if TestWindow.c == 2:  # FinalMarking
-            self.rating = float(test_array[MainWindow.nt][3]) - float(MainWindow.age)
 
-        if test_array[MainWindow.nt][1] == "One Leg":
-            self.manager.get_screen(
-                "test").ids.test_image.source = 'assets/one_leg.png'
-            self.manager.get_screen(
-                "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
-        elif test_array[MainWindow.nt][1] == "Two Legs":
-            self.manager.get_screen(
-                "test").ids.test_image.source = 'assets/two_leg.png'
-            self.manager.get_screen(
-                "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+                elif TestWindow.c == 1 and int(self.prev) == 1:  # FailPass
+                    MainWindow.nt = MainWindow.nt - 1
+                    if MainWindow.nt < 1:
+                        MainWindow.nt = 1
+
+            if TestWindow.c == 2:  # FinalMarking
+                self.rating = float(test_array[MainWindow.nt][3]) - float(MainWindow.age)
+
+            if test_array[MainWindow.nt][1] == "One Leg":
+                self.manager.get_screen(
+                    "test").ids.test_image.source = 'assets/one_leg.png'
+                self.manager.get_screen(
+                    "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
+            elif test_array[MainWindow.nt][1] == "Two Legs":
+                self.manager.get_screen(
+                    "test").ids.test_image.source = 'assets/two_leg.png'
+                self.manager.get_screen(
+                    "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+            else:
+                return 0
+
+            self.prev = 0
+            TestWindow.c = TestWindow.c + 1
+            MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
+            print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
+            control = self.manager.get_screen('title')
+            self.send_text = MainWindow.seat_height
+            if TestWindow.c < 3:
+                try:
+                    control.send_data("START")
+                    control.send_data(str(self.send_text))
+                except Exception as e:
+                    self.manager.current = "connect"
+                    self.manager.transition.direction = "left"
         else:
             pass
-        self.prev = 0
-        TestWindow.c = TestWindow.c + 1
-        MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
-        control = self.manager.get_screen('title')
-        self.send_text = MainWindow.seat_height
-        try:
-            control.send_data("START")
-            control.send_data(str(self.send_text))
-        except Exception as e:
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
 
     def failed(self):
-        if TestWindow.c < 2:
+        if TestWindow.c < 3:
+            if TestWindow.c < 2:
 
-            if TestWindow.c == 0:  # Pass
-                MainWindow.nt = MainWindow.nt + 2
-                if MainWindow.nt > 14:
-                    MainWindow.nt = 14
+                if TestWindow.c == 0:  # Pass
+                    MainWindow.nt = MainWindow.nt + 2
+                    if MainWindow.nt > 14:
+                        MainWindow.nt = 14
 
-            elif TestWindow.c == 1 and int(self.prev) == 1:  # FailFail
-                MainWindow.nt = MainWindow.nt + 2
-                if MainWindow.nt > 14:
-                    MainWindow.nt = 14
+                elif TestWindow.c == 1 and int(self.prev) == 1:  # FailFail
+                    MainWindow.nt = MainWindow.nt + 2
+                    if MainWindow.nt > 14:
+                        MainWindow.nt = 14
 
-            elif TestWindow.c == 1 and int(self.prev) == 0:  # PassFail
+                elif TestWindow.c == 1 and int(self.prev) == 0:  # PassFail
+                    MainWindow.nt = MainWindow.nt + 1
+                    if MainWindow.nt > 14:
+                        MainWindow.nt = 14
+
+            if TestWindow.c == 2:  # FinalMarking
                 MainWindow.nt = MainWindow.nt + 1
-                if MainWindow.nt > 14:
-                    MainWindow.nt = 14
+                self.rating = float(MainWindow.age) - float(test_array[MainWindow.nt][3])
+            if test_array[MainWindow.nt][1] == "One Leg":
+                self.manager.get_screen(
+                    "test").ids.test_image.source = 'assets/one_leg.png'
+                self.manager.get_screen(
+                    "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
+            elif test_array[MainWindow.nt][1] == "Two Legs":
+                self.manager.get_screen(
+                    "test").ids.test_image.source = 'assets/two_leg.png'
+                self.manager.get_screen(
+                    "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+            else:
+                return 0,
 
-        if TestWindow.c == 2:  # FinalMarking
-            MainWindow.nt = MainWindow.nt + 1
-            self.rating = float(MainWindow.age) - float(test_array[MainWindow.nt][3])
-        if test_array[MainWindow.nt][1] == "One Leg":
-            self.manager.get_screen(
-                "test").ids.test_image.source = 'assets/one_leg.png'
-            self.manager.get_screen(
-                "test").ids.test2_label.text = '片足で立ち上がり，３秒間姿勢を維持してください\n．その後，椅子に座って，結果を選んでください．'
-        elif test_array[MainWindow.nt][1] == "Two Legs":
-            self.manager.get_screen(
-                "test").ids.test_image.source = 'assets/two_leg.png'
-            self.manager.get_screen(
-                "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
+            self.prev = 1
+            TestWindow.c = TestWindow.c + 1
+            MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
+            print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
+
+            self.send_text = MainWindow.seat_height
+            control = self.manager.get_screen('title')
+            if TestWindow.c < 3:
+                try:
+                    control.send_data("START")
+                    control.send_data(str(self.send_text))
+                except Exception as e:
+                    print(str(e))
+                    sleep(0.1)
+                    self.manager.current = "connect"
+                    self.manager.transition.direction = "left"
         else:
             pass
-        self.prev = 1
-        TestWindow.c = TestWindow.c + 1
-        MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-        # self.manager.get_screen(
-        #   "test").ids.test2_label.text = f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}'
-        print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
-
-        self.send_text = MainWindow.seat_height
-        control = self.manager.get_screen('title')
-        try:
-            control.send_data("START")
-            control.send_data(str(self.send_text))
-        except Exception as e:
-            print(str(e))
-            sleep(0.1)
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
-        return MainWindow.nt
-
-    pass
 
 
 class LoadingWindow(Screen):  # incomplete
@@ -454,56 +445,75 @@ class MaintenanceWindow(Screen):
         maintenance.ids[button_name].disabled = state
 
     def get_data(self):
+        while True:
+            control = self.manager.get_screen('title')
+            return control.get_data()
+
+    def send_data(self, msg=None):
         control = self.manager.get_screen('title')
-        return control.get_data()
+        control.send_data(msg)
 
     def enable_test(self):
         self.set_button_state('maintenance_button_1', False)
 
     def test_1(self):
+        maintenance = self.manager.get_screen('maintenance')
         self.set_button_state('maintenance_button_1', True)
         self.set_button_state('maintenance_button_2', False)
         try:
+            self.send_data("ONETIMEREAD")
             self.v1 = self.get_data()
-        finally:
+            self.v1 = (self.v1.decode())
+            print(self.v1)
+            maintenance.ids.test1.text = f'現在の座面高さ{self.v1}㎝'
+        except Exception as e:
+            print(e)
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
 
     def test_2(self):
+        maintenance = self.manager.get_screen('maintenance')
         self.set_button_state('maintenance_button_2', True)
         self.set_button_state('maintenance_end', False)
         try:
+
+            self.send_data("ONETIMEREAD")
             self.v2 = self.get_data()
-        finally:
+            self.v2 = (self.v2.decode())
+            print(self.v1)
+            maintenance.ids.test2.text = f'現在の座面高さ{self.v2}㎝'
+        except Exception as e:
+            print(e)
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
-        self.a = (40 - 10) / (self.v2 - self.v1)
-        self.b = (10 * self.v2 - 40 * self.v1) / (self.v2 - self.v1)
+        self.a = (40 - 10) / (float(self.v2) - float(self.v1))
+        self.b = (10 * float(self.v2) - 40 * float(self.v1)) / (float(self.v2) - float(self.v1))
+        a = round(self.a, 1)
+        b = round(self.b, 1)
+        maintenance.ids.result.text = f'A：{a}\nB：{b}'
+        with open("calculation.txt", mode="w") as myfile:
+            myfile.writelines(f"{a},{b}")
+            print("A: ", a, "\nB: ", b, "\nADDED!")
+            myfile.close()
 
     def test_end(self):
+        self.send_data("EXIT")
         pass
 
     def exit(self):
         try:
             control = self.manager.get_screen('title')
             control.send_data("EXIT")
+            recv = (control.get_data())
+            print(recv.decode())
             self.manager.current = "title"
             self.manager.transition.direction = "down"
         except Exception as e:
+            print(e)
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
 
     pass
-
-    def exit(self):
-        try:
-            control = self.manager.get_screen('title')
-            control.send_data("EXIT")
-            self.manager.current = "title"
-            self.manager.transition.direction = "down"
-        except Exception as e:
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
 
 
 class ResultWindow(Screen):
@@ -546,7 +556,6 @@ class MyMainApp(MDApp):
         self.theme_cls.primary_palette = "Orange"  # Choose a darker color palette, like "Gray"
         self.theme_cls.primary_hue = "800"
         self.theme_cls.secondary_palette = "Grey"
-        self.theme_cls.accent_color
 
         if platform == 'android' or platform == 'ios':
             Window.maximize()
