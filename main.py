@@ -1,3 +1,5 @@
+import sys
+
 from kivy.lang import Builder
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -130,22 +132,24 @@ class MainWindow(Screen):
         MainWindow.age = 0
         MainWindow.pre_score = 0
         MainWindow.seat_height = 0  # the one that will be sent to the chair
-        MainWindow.std_height = 0  # Capital H
-
+        MainWindow.std_height = 0  # Capital Ho
         self.seat = 0
 
 
     def data_call(self):
-
+        with open("calculation.txt", mode="r") as myfile:
+            data = myfile.read()
+            MainWindow.a = data.split(",")
+            tmp = [float(e) for e in MainWindow.a]
+            MainWindow.a, MainWindow.b = tmp
+            myfile.close()
+        age_flag = 0
+        ht_flag = 0
         test1_screen = self.manager.get_screen("test")
         main_screen = self.manager.get_screen("main")
         control = self.manager.get_screen('title')
 
-        try:
-            control.send_data("START")
-        except Exception as e:
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
+
 
         # Collect all the data from the Text Input Field in "project1.kv"
 
@@ -162,10 +166,19 @@ class MainWindow(Screen):
         # Space or Tab will be neglected
         if ht_text == "" or str(ht_text.isnumeric()) == "False":
             main_screen.ids.error_label_main.text = "身長を入力してください！"
+            ht_flag = 1
             return 0
         if age_text == "" or str(age_text.isnumeric()) == "False":
             main_screen.ids.error_label_main.text = "年齢を入力してください！"
+            age_flag = 1
             return 0
+        if age_flag == 0 and ht_flag == 0 :
+            try:
+                control.send_data("START")
+                sleep(0.1)
+            except Exception as e:
+                self.manager.current = "connect"
+                self.manager.transition.direction = "left"
 
         MainWindow.age = int(age_text)
         MainWindow.ht = int(ht_text)
@@ -188,6 +201,7 @@ class MainWindow(Screen):
             pre_score = 95
         print(MainWindow.nt)
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
+        MainWindow.seat_height = MainWindow.a * MainWindow.seat_height + MainWindow.b
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
         if test_array[MainWindow.nt][1] == "One Leg":
@@ -327,6 +341,7 @@ class TestWindow(Screen):
             self.prev = 0
             TestWindow.c = TestWindow.c + 1
             MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
+            MainWindow.seat_height = MainWindow.a*MainWindow.seat_height+MainWindow.b
             print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
             control = self.manager.get_screen('title')
             self.send_text = MainWindow.seat_height
@@ -378,6 +393,7 @@ class TestWindow(Screen):
             self.prev = 1
             TestWindow.c = TestWindow.c + 1
             MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
+            MainWindow.seat_height = MainWindow.a * MainWindow.seat_height + MainWindow.b
             print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
 
             self.send_text = MainWindow.seat_height
@@ -402,6 +418,7 @@ class LoadingWindow(Screen):  # incomplete
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
         self.response = 0
+        loading_gif = Image(source='assets/loading.gif')
 
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")

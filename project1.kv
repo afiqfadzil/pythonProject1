@@ -1,5 +1,5 @@
 <WindowManager>:
-
+    LoadingWindow:
     AddressScreen:
     MaintenanceWindow:
     TextWindow:
@@ -9,7 +9,7 @@
     TestWindow:
     ConnectionWindow:
     ResultWindow:
-    LoadingWindow:
+
 
 
 
@@ -350,6 +350,11 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
         halign :"center"
         size_hint_x :1
+    Image :
+        id : loading_gif
+        source : 'assets/loading.zip'
+        stretch : True
+
 
     MDRectangleFlatButton :
         id : load_button
