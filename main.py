@@ -1,5 +1,6 @@
 import sys
 
+from kivy.animation import Animation
 from kivy.lang import Builder
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -415,10 +416,51 @@ class LoadingWindow(Screen):  # incomplete
     # disable the button until the chair had been set up (+OK signal from raspberry pi)
     # insert in between every test window (done)
     # (Extra) add loading bar
+    kv ='''
+    <Grid@MDGridLayout>
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: root.angle
+                origin: self.center
+        canvas.after:
+            PopMatrix
+    MDFloatLayout:
+        md_bg_color : 1,1,1,1
+        Grid:
+            id:loading_anim
+            angle:0
+            rows:2
+            cols:2
+            size_hint: None,None
+            height:60
+            width:60
+            pos_hint:{"center_x":.5,"center_y":.5}
+            spacing:5
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+    '''
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
         self.response = 0
-        loading_gif = Image(source='assets/loading.gif')
+        self.angle = 45
+
+
+    def loading(self, *args):
+        anim = Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
+        anim += Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
+        anim += Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
+        anim.bind(on_complete=self.loading)
+        anim.start(self.root.ids.loading_anim)
+        self.angle += 45
+
+
 
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")

@@ -1,0 +1,40 @@
+<WindowManager>:
+    LoadingWindow:
+
+
+<LoadingWindow>
+    name : "loadingwindow"
+    MDGridLayout:
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle : 0
+                origin:
+        canvas.after:
+            PopMatrix
+    MDFloatLayout:
+        md_bg_color : 0,0,0,0
+        MDGridLayout:
+            id:loading
+            angle : 0
+            rows:2
+            cols:2
+            size_hint: None,None
+            height:60
+            width:60
+            pos_hint:{"center_x":.5,"center_y":.5}
+            spacing:5
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+    MDRectangleFlatButton :
+        id : load_button
+        text : "Proceed"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        on_release :
+            root.loading()

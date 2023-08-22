@@ -340,20 +340,48 @@
 
 
 <LoadingWindow>:
-
     name : "loading"
     on_enter:
+        root.loading()
         root.enable_load_button()
+    MDGridLayout
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: root.angle
+                origin: self.center
+        canvas.after:
+            PopMatrix
+    MDFloatLayout:
+        md_bg_color : 0,0,0,0
+        MDGridLayout:
+            id:loading_anim
+            angle:0
+            rows:2
+            cols:2
+            size_hint: None,None
+            height:60
+            width:60
+            pos_hint:{"center_x":.5,"center_y":.5}
+            spacing:5
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+            MDFloatLayout:
+                md_bg_color:rgba(242,80,34,255)
+
+
+
     MDLabel :
         id:loading_label
         text : "お待ちしてください。。。"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.4}
         halign :"center"
         size_hint_x :1
-    Image :
-        id : loading_gif
-        source : 'assets/loading.zip'
-        stretch : True
+
 
 
     MDRectangleFlatButton :
@@ -365,7 +393,6 @@
             root.disable_load_button()
             app.root.current = "test"
             root.manager.transition.direction = "up"
-
 
 
 <ConnectionWindow>
