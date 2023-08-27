@@ -8,8 +8,8 @@
         canvas.before:
             PushMatrix
             Rotate:
-                angle : 0
-                origin:
+                angle : root.angle
+                origin: root.center
         canvas.after:
             PopMatrix
     MDFloatLayout:

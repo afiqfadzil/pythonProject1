@@ -2,8 +2,10 @@ import sys
 
 from kivy.animation import Animation
 from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.widget import Widget
 from kivy.utils import platform
 from kivymd.app import MDApp
 
@@ -299,6 +301,13 @@ class TestWindow(Screen):
         if TestWindow.c < 3:
             self.manager.current = "loading"
             self.manager.transition.direction = "left"
+    def retry(self):
+
+        self.manager.get_screen(
+                    "test").ids.test2_label.text = 'もう一度せき着席して、もう一度試してください'
+
+        pass
+
 
     def passed(self):
         if TestWindow.c < 3:
@@ -607,8 +616,12 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
         self.manager.transition.direction = "up"
 
     pass
-
-
+class Overlay(BoxLayout):
+    pass
+class TopBar(BoxLayout):
+    pass
+class NavDrawer(Widget):
+    pass
 class MyMainApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"

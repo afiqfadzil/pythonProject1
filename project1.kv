@@ -1,23 +1,36 @@
 <WindowManager>:
+    TestWindow:
+    TitleWindow:
+
     LoadingWindow:
     AddressScreen:
     MaintenanceWindow:
     TextWindow:
-    TitleWindow:
+
     MainWindow:
     ExplanationWindow:
-    TestWindow:
+
     ConnectionWindow:
     ResultWindow:
 
 
-
+<Overlay>:
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 0.5  # Adjust the alpha value (0.5 in this case) to control dim intensity
+        Rectangle:
+            pos: self.pos
+            size:self.size
 
 <MDLabel> :
     color: 1, 1, 1, 1
 
     font_name: "meiryo.ttc"
-    font_size : '20sp'
+    font_size : '16sp'
+
+<Label>:
+    font_name: "meiryo.ttc"
+
 
 
 
@@ -42,10 +55,7 @@
 
 
 
-<Label>:
-    size_hint : 0.15,0.045
-    font_name: "meiryo.ttc"
-    font_size : '16sp'
+
 
 <TextInput>:
     font_size : '20sp'
@@ -222,6 +232,9 @@
 <TestWindow>:
 
     name : "test"
+
+
+
     MDLabel :
         id : test2_label
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
@@ -254,9 +267,33 @@
             root.next_screen_loading()
             root.next_screen_result()
 
+
     MDRectangleFlatButton :
         text : "やり直し"
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
+        on_release:
+            root.retry()
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+    BoxLayout:
+        #Comment MDToolbar section to remove toolbar and still maintain full fucntionality
+        orientation:"horizontal"
+        MDTopAppBar:
+            title: "ロコモ年齢測定システム"
+            anchor_title: "left"
+            size_hint: (1, 0.07)
+            elevation: 0
+            left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.97}
+            font_size : '20sp'
+
+
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
 
 
 
