@@ -3,6 +3,7 @@ import sys
 from kivy.animation import Animation
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
@@ -73,12 +74,14 @@ class TitleWindow(Screen):  # connection to server may start here
     def start_maintenance(self):
         try:
             self.manager.current = "maintenance"
-            self.manager.transition.direction = "up"
+            self.manager.transition.direction = "right"
         except Exception as e:
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
 
             pass
+
+
 
     def connection(self):
         try:
@@ -103,6 +106,9 @@ class TitleWindow(Screen):  # connection to server may start here
             # msg = input()
             self.sock.send_data(msg)
             break
+    def info(self):
+        self.manager.current = "explain"
+        self.manager.transition.direction = "left"
 
 
 class AddressScreen(Screen):
@@ -228,8 +234,11 @@ class MainWindow(Screen):
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
 
-        pass
 
+    def back(self):
+        self.manager.current = "title"
+        self.manager.transition.direction = "right"
+        pass
 
 # Have to add the picture on the posture + what is やり直しmeans
 class TestWindow(Screen):
@@ -425,51 +434,18 @@ class LoadingWindow(Screen):  # incomplete
     # disable the button until the chair had been set up (+OK signal from raspberry pi)
     # insert in between every test window (done)
     # (Extra) add loading bar
-    kv ='''
-    <Grid@MDGridLayout>
-        canvas.before:
-            PushMatrix
-            Rotate:
-                angle: root.angle
-                origin: self.center
-        canvas.after:
-            PopMatrix
-    MDFloatLayout:
-        md_bg_color : 1,1,1,1
-        Grid:
-            id:loading_anim
-            angle:0
-            rows:2
-            cols:2
-            size_hint: None,None
-            height:60
-            width:60
-            pos_hint:{"center_x":.5,"center_y":.5}
-            spacing:5
-            MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
-            MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
-            MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
-            MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
-    '''
+
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
         self.response = 0
-        self.angle = 45
 
-
-    def loading(self, *args):
-        anim = Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
-        anim += Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
-        anim += Animation(height = 80 , width = 80 ,spacing = [10,10], duration = 0.5)
+    def loading(self, *kwargs):
+        loading_grid = self.ids.loading
+        anim = Animation(height=120, width=120, spacing=[10, 10], duration=0.5)
+        anim += Animation(height=90, width=90, spacing=[10, 10], duration=0.5)
+        anim += Animation(angle=loading_grid.angle + 45, duration=0.5)
         anim.bind(on_complete=self.loading)
-        anim.start(self.root.ids.loading_anim)
-        self.angle += 45
-
-
+        anim.start(loading_grid)
 
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")
@@ -524,6 +500,10 @@ class MaintenanceWindow(Screen):
     def enable_test(self):
         self.set_button_state('maintenance_button_1', False)
 
+    def back(self):
+        self.manager.current = "title"
+        self.manager.transition.direction = "left"
+        pass
     def test_1(self):
         maintenance = self.manager.get_screen('maintenance')
         self.set_button_state('maintenance_button_1', True)
@@ -568,18 +548,6 @@ class MaintenanceWindow(Screen):
         self.send_data("EXIT")
         pass
 
-    def exit(self):
-        try:
-            control = self.manager.get_screen('title')
-            control.send_data("EXIT")
-            recv = (control.get_data())
-            print(recv.decode())
-            self.manager.current = "title"
-            self.manager.transition.direction = "down"
-        except Exception as e:
-            print(e)
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
 
     pass
 
@@ -590,12 +558,12 @@ class ResultWindow(Screen):
 
 class ExplanationWindow(Screen):
 
-    def connection(self):
-        control = self.manager.get_screen('title')
-        try:
-            control.connection()
-        except WindowsError:
-            print("No Connection")
+
+
+    def back(self):
+        self.manager.current = "title"
+        self.manager.transition.direction = "right"
+        pass
 
     pass
 
@@ -618,9 +586,8 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
     pass
 class Overlay(BoxLayout):
     pass
-class TopBar(BoxLayout):
-    pass
-class NavDrawer(Widget):
+
+class NavDrawer(BoxLayout):
     pass
 class MyMainApp(MDApp):
     def build(self):
@@ -629,10 +596,7 @@ class MyMainApp(MDApp):
         self.theme_cls.primary_hue = "800"
         self.theme_cls.secondary_palette = "Grey"
 
-        if platform == 'android' or platform == 'ios':
-            Window.maximize()
-        else:
-            Window.size = (620, 1024)
+
         return WindowManager()
 
 

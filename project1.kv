@@ -1,18 +1,27 @@
 <WindowManager>:
-    TestWindow:
     TitleWindow:
+    MainWindow:
+    AddressScreen:
+    TestWindow:
 
     LoadingWindow:
-    AddressScreen:
-    MaintenanceWindow:
-    TextWindow:
 
-    MainWindow:
+    MaintenanceWindow:
+
     ExplanationWindow:
 
     ConnectionWindow:
     ResultWindow:
 
+<MDTopAppBar>:
+    title: "Locomotion Age Measurement"
+    anchor_title: "center"
+    size_hint: (1, 0.1)
+    elevation: 10
+    pos_hint : {"center_x" : 0.5 , "center_y" : 0.975}
+<MDNavigationDrawer>:
+    BoxLayout:
+        orientation: 'horizontal'
 
 <Overlay>:
     canvas:
@@ -24,12 +33,15 @@
 
 <MDLabel> :
     color: 1, 1, 1, 1
-
     font_name: "meiryo.ttc"
     font_size : '16sp'
 
 <Label>:
     font_name: "meiryo.ttc"
+    color: 1, 1, 1, 1
+    font_name: "meiryo.ttc"
+    font_size : '16sp'
+
 
 
 
@@ -67,42 +79,7 @@
     ripple_behaviour :True
     md_bg_color : 1,1,1,1
 
-<TextWindow>:
-    name :"text"
-    FloatLayout:
-        Label:
-            pos_hint:{"x":0.25,"top":0.98}
-            size_hint:0.5,0.07
-            font_size:28
-            text:"FULL NAME"
-        TextInput:
-            id:name
-            pos_hint:{"x":0.25,"top":0.9}
-            size_hint:0.5,0.07
-            multiline: False
-            halign: 'center'
-            valign: 'middle'
-            font_size:22
-        Label:
-            pos_hint:{"x":0.25,"top":0.78}
-            size_hint:0.5,0.07
-            font_size:28
-            text:"EMAIL"
-        TextInput:
-            id:email
-            pos_hint:{"x":0.25,"top":0.7}
-            size_hint:0.5,0.07
-            multiline: False
-            halign: 'center'
-            valign: 'middle'
-            font_size:22
 
-        Button:
-            id: btn1
-            pos_hint:{"x":0.25,"top":0.3}
-            text: "Submit"
-            size_hint: 0.5,0.1
-            on_press: root.press()
 
 <AddressScreen>
 
@@ -124,13 +101,25 @@
             pos_hint : {"x":0.45,"y":0.75}
         MDLabel :
             text : "IPアドレス:"
-            pos_hint : {"x":0.25,"y":0.75}
+            pos_hint : {"center_x":0.75,"center_y":0.785}
+
         MDRectangleFlatButton:
             pos_hint : {"x":0.45,"y":0.3}
             text : "Start"
             on_release :
                 root.connect()
 
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+
+    MDTopAppBar:
+        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
 
 
 
@@ -144,10 +133,9 @@
 
 
         MDLabel :
-            theme_text_color: 'Custom'
-            text_color: 0, 0, 0, 1
+
             text : "年齢 :"
-            pos_hint : {"x":0.25,"y":0.75}
+            pos_hint : {"center_x":0.85,"center_y":0.785}
 
 
         MDTextField :
@@ -162,7 +150,7 @@
 
         MDLabel :
             text : "身長:"
-            pos_hint : {"x":0.25,"y":0.65}
+            pos_hint : {"center_x":0.85,"center_y":0.685}
 
 
 
@@ -175,10 +163,10 @@
             text:"123"
         MDLabel:
             text:"性別:"
-            pos_hint : {"x":0.25,"y":0.55}
+            pos_hint : {"center_x":0.85,"center_y":0.565}
         MDLabel:
             text:"男性"
-            pos_hint : {"x":0.4,"y":0.545}
+            pos_hint : {"center_x":0.95,"center_y":0.565}
         CheckBox:
             id: male_gender
             group: "gender"
@@ -187,7 +175,7 @@
             size_hint : 0.15,0.035
         MDLabel:
             text:"女性"
-            pos_hint : {"x":0.55,"y":0.545}
+            pos_hint : {"center_x":1.1,"center_y":0.565}
         CheckBox:
             id: female_gender
             group: "gender"
@@ -196,7 +184,7 @@
             size_hint : 0.15,0.035
         MDLabel:
             text:"他の"
-            pos_hint : {"x":0.70,"y":0.545}
+            pos_hint : {"center_x":1.25,"center_y":0.565}
         CheckBox:
             id: other_gender
             group: "gender"
@@ -220,13 +208,20 @@
                 root.data_call()
 
 
-        MDRectangleFlatButton :
-            text : "戻る"
-            pos_hint : {"" : 0.1 , "center_y" : 0.980}
-            size_hint : 0.2,0.035
-            on_release :
-                app.root.current = "title"
-                root.manager.transition.direction = "down"
+
+    MDTopAppBar:
+
+        left_action_items: [['arrow-left', lambda x: root.back()]]
+
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
+
 
 
 <TestWindow>:
@@ -277,23 +272,17 @@
         id: dim_overlay
         opacity: 1 if root.ids.nav_drawer.state == "open" else 0
         on_touch_down: root.ids.nav_drawer.set_state("closed")
-    BoxLayout:
-        #Comment MDToolbar section to remove toolbar and still maintain full fucntionality
-        orientation:"horizontal"
-        MDTopAppBar:
-            title: "ロコモ年齢測定システム"
-            anchor_title: "left"
-            size_hint: (1, 0.07)
-            elevation: 0
-            left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
-            pos_hint : {"center_x" : 0.5 , "center_y" : 0.97}
-            font_size : '20sp'
 
-
+    MDTopAppBar:
+        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
     MDNavigationDrawer:
         id: nav_drawer
         BoxLayout:
             orientation: 'horizontal'
+
+
+
+
 
 
 
@@ -328,6 +317,18 @@
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "up"
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+
+    MDTopAppBar:
+        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
+
 
 <TitleWindow>:
 
@@ -360,47 +361,50 @@
             app.root.current = "main"
             root.manager.transition.direction = "left"
 
-    MDRectangleFlatButton :
-        text : "メンテナンス"
-        pos_hint : {"" : 0.1 , "center_y" : 0.980}
-        size_hint : 0.2,0.035
-        on_release :
-            root.start_maintenance()
-
-    MDRectangleFlatButton :
-        text : "説明"
-        pos_hint : {"center_x" : 0.9 , "center_y" : 0.980}
-        size_hint : 0.2,0.035
-        on_release :
-            app.root.current = "explain"
-            root.manager.transition.direction = "up"
 
 
+
+
+    MDTopAppBar:
+
+        left_action_items: [['cog', lambda x: root.start_maintenance()]]
+        right_action_items: [['information', lambda x: root.info()]]
+
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
 <LoadingWindow>:
     name : "loading"
     on_enter:
         root.loading()
-        root.enable_load_button()
-    MDGridLayout
-        canvas.before:
-            PushMatrix
-            Rotate:
-                angle: root.angle
-                origin: self.center
-        canvas.after:
-            PopMatrix
+
+
+
     MDFloatLayout:
         md_bg_color : 0,0,0,0
         MDGridLayout:
-            id:loading_anim
-            angle:0
+            id :loading
+            angle : 0
             rows:2
             cols:2
             size_hint: None,None
-            height:60
-            width:60
-            pos_hint:{"center_x":.5,"center_y":.5}
+            height:100
+            width:100
+            pos_hint:{"center_x":.5,"center_y":.6}
             spacing:5
+            canvas.before:
+                PushMatrix
+                Rotate:
+                    angle : self.angle
+                    axis:0,0,1
+                    origin: self.center
+            canvas.after:
+                PopMatrix
             MDFloatLayout:
                 md_bg_color:rgba(242,80,34,255)
             MDFloatLayout:
@@ -409,6 +413,7 @@
                 md_bg_color:rgba(242,80,34,255)
             MDFloatLayout:
                 md_bg_color:rgba(242,80,34,255)
+
 
 
 
@@ -460,12 +465,6 @@
 
 
     name : "maintenance"
-    MDRectangleFlatButton :
-        id : maintenance_return
-        text : "戻る"
-        pos_hint : {"center_x" : 0.05 , "center_y" : 0.980}
-        on_release :
-            root.exit()
     MDLabel :
         id: maintenance_title
         font_size : '25sp'
@@ -557,6 +556,9 @@
         disabled : True
         on_release:
             root.exit()
+    MDTopAppBar:
+
+        left_action_items: [['arrow-left', lambda x: root.back()]]
 
 <ExplanationWindow>
 
@@ -592,7 +594,9 @@
         pos_hint : {"center_x" : 0.7, "center_y" :0.40}
         size_hint_x : 1.2
         halign :"left"
+    MDTopAppBar:
 
+        left_action_items: [['arrow-left', lambda x: root.back()]]
 
 
 
@@ -613,3 +617,6 @@
         on_release :
             app.root.current = "title"
             root.manager.transition.direction = "down"
+    MDTopAppBar:
+
+        left_action_items: [['arrow-left', lambda x: root.back()]]

@@ -34,8 +34,6 @@ def controller(response, comm, data):
                 pass
 
 
-        elif control == "MAINTENANCE":
-            response.put("(MAINTENANCE START)===SERVER")
 
         elif control == "ONETIMEREAD":
             m = Process(target=maintenance, args=(response, data))
@@ -51,7 +49,11 @@ def controller(response, comm, data):
         elif control == "EXIT":
             response.put("OK")
             print("EXIT SUCCESS")
-        pass
+
+
+        else:
+
+            pass
 
 
 def maintenance(response, data):
@@ -84,6 +86,7 @@ def server(response, comm):
             clientsocket.close()
         except ConnectionResetError:
             print("Connection Reset, Waiting for new connection")
+            clientsocket.close()
 
 
 def relay(response, data):
