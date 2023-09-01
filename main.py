@@ -174,17 +174,34 @@ class MainWindow(Screen):
         # Radio Button for Gender
         # Space or Tab will be neglected
         if ht_text == "" or str(ht_text.isnumeric()) == "False":
-            main_screen.ids.error_label_main.text = "身長を入力してください！"
+            main_screen.ids.error_label_main_ht.text = "*身長を入力してください！"
             ht_flag = 1
             return 0
+
+
+        else:
+            main_screen.ids.error_label_main_ht.text = ""
+
+
         if age_text == "" or str(age_text.isnumeric()) == "False":
-            main_screen.ids.error_label_main.text = "年齢を入力してください！"
+            main_screen.ids.error_label_main_age.text = "*年齢を入力してください！"
+
             age_flag = 1
             return 0
+        elif int(age_text) <= 15 or int(age_text) > 150:
+            main_screen.ids.error_label_main_age.text = "*年齢にエラー (15~150)"
+
+            return 0
+        else:
+            main_screen.ids.error_label_main_age.text = ""
+
+
         if age_flag == 0 and ht_flag == 0 :
             try:
                 control.send_data("START")
                 sleep(0.1)
+
+
             except Exception as e:
                 self.manager.current = "connect"
                 self.manager.transition.direction = "left"
@@ -192,10 +209,8 @@ class MainWindow(Screen):
         MainWindow.age = int(age_text)
         MainWindow.ht = int(ht_text)
         MainWindow.std_height = 0.25 * MainWindow.ht - 1
-        if MainWindow.age < 15 or MainWindow.age > 150:
-            main_screen.ids.error_label_main.text = "年齢にエラー (15~150)"
-            return 0
-        elif MainWindow.age >= 81:
+
+        if MainWindow.age >= 81:
             MainWindow.nt = 8
             pre_score = 65
         elif MainWindow.age >= 35:
