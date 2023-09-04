@@ -38,7 +38,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,Kivy==2.1.0,charset-normalizer==3.1.0,docutils,idna==3.4,kivy-deps.angle==0.3.3,kivy-deps.glew==0.3.1,kivy-deps.sdl2==0.4.5,Kivy-Garden==0.1.5,kivy-garden.graph==0.4.0,kivymd==1.1.1,numpy==1.25.2,Pillow==9.5.0,plyer==2.1.0,Pygments==2.15.1,PyOpenGL==3.1.6,PyOpenGL-accelerate==3.1.6,pypiwin32==223,pywin32==306,requests==2.28.2,urllib3==1.26.15
+requirements = python3,Kivy==2.1.0,idna==3.4,Kivy-Garden==0.1.5,kivy-garden.graph==0.4.0,kivymd==1.1.1,numpy==1.25.2,Pillow==9.5.0,plyer==2.1.0,Pygments==2.15.1,PyOpenGL==3.1.6,PyOpenGL-accelerate==3.1.6,pypiwin32==223,pywin32==306,requests==2.28.2,urllib3==1.26.15
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
