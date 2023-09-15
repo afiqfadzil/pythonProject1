@@ -1,19 +1,32 @@
 <WindowManager>:
     AddressScreen:
+    ResultWindow:
+
+    ConnectionWindow:
+    TestWindow:
+    LoadingWindow:
     MainWindow:
     TitleWindow:
+    ExplanationWindow:
 
 
-    TestWindow:
 
-    LoadingWindow:
+
+
+
 
     MaintenanceWindow:
 
-    ExplanationWindow:
 
-    ConnectionWindow:
-    ResultWindow:
+
+
+
+
+
+
+
+
+
 
 <MDTopAppBar>:
     title: "Locomotion Age Measurement"
@@ -36,13 +49,13 @@
 <MDLabel> :
     color: 1, 1, 1, 1
     font_name: "meiryo.ttc"
-    font_size : '16sp'
+    font_size : '20sp'
 
 <Label>:
     font_name: "meiryo.ttc"
     color: 1, 1, 1, 1
     font_name: "meiryo.ttc"
-    font_size : '16sp'
+    font_size : '20sp'
 
 
 
@@ -75,11 +88,18 @@
     font_size : '20sp'
 
 
-
+<MDFillRoundFlatButton>:
+    size_hint : 0.1,0.035
+    ripple_behaviour :True
+    md_bg_color : 1,1,1,1
+    theme_text_color: "Custom"
+    text_color: "orange"
 <MDRectangleFlatButton>:
     size_hint : 0.1,0.035
     ripple_behaviour :True
     md_bg_color : 1,1,1,1
+    font_size :'20sp'
+
 
 
 
@@ -87,27 +107,46 @@
 
     name : "address"
     FloatLayout:
-        MDTextField :
-            id : ip
-            text:"192.168.5.1"
-            hint_text:"IP アドレス"
-            multiline : False
-            size_hint_x : 0.3
-            helper_text :"e.g : 127.0.0.1"
-            icon_left: 'key-variant'
-            normal_color: app.theme_cls.accent_color
-            color_active: 211/255, 211/255, 211/255, 1
+        GridLayout:
+            halign:"center"
+            row_force_default :"True"
+            row_default_height :"80"
 
-            max_height : dp(100)
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.70}
 
-            pos_hint : {"x":0.45,"y":0.75}
-        MDLabel :
-            text : "IPアドレス:"
-            pos_hint : {"center_x":0.75,"center_y":0.785}
+
+            size_hint_y:0.2
+            size_hint_x:0.8
+            column:1
+            rows:2
+            MDLabel :
+                text : "IPアドレス   "
+                halign:"left"
+                font_size : "20sp"
+
+            MDTextField :
+                id : ip
+                text:"192.168.5.1"
+                hint_text:"IP アドレス"
+                required:True
+
+                size_hint_x:1
+                multiline : False
+                helper_text :"e.g : 127.0.0.1"
+                icon_left: 'key-variant'
+                normal_color: app.theme_cls.accent_color
+                color_active: 211/255, 211/255, 211/255, 1
+
+
+
+
+
 
         MDRectangleFlatButton:
-            pos_hint : {"x":0.45,"y":0.3}
+            pos_hint : {"center_x":0.5,"center_y":0.3}
             text : "Start"
+            halign:"center"
+            size_hint_x: 0.7
             on_release :
                 root.connect()
 
@@ -133,93 +172,139 @@
 
 
     FloatLayout:
+        MDCard:
+            orientation: 'vertical'
+            pos_hint:{"center_x" : 0.5 , "center_y" :0.475}
+            size_hint_y:0.85
+            size_hint_x:0.8
+            padding: "20dp"
+            style:"elevated"
+            adaptive_size: True
+            GridLayout:
+                halign:"center"
+
+                row_default_height :"70"
+
+                pos_hint:{"center_x" : 0.5 , "center_y" : 0.75}
 
 
-        MDLabel :
+                size_hint_y:0.2
+                size_hint_x:0.8
+                column:1
+                rows:5
 
-            text : "年齢 :"
-            pos_hint : {"center_x":0.85,"center_y":0.785}
+                MDLabel :
 
-
-        MDTextField :
-            id : age
-            text: "123"
-            multiline : False
-            hint_text:"必須"
-            helper_text: "13~150"
-
-
-            pos_hint : {"x":0.45,"y":0.75}
-
-        MDLabel :
-            text : "身長:"
-            pos_hint : {"center_x":0.85,"center_y":0.635}
+                    text : "年齢"
+                    size_hint_x:1.0
+                    halign:"left"
+                    font_size : "20sp"
 
 
+                MDTextField :
+                    id : age
+                    text: "123"
+                    multiline : False
+                    hint_text:"必須"
+                    helper_text: "13~150"
+                    required: True
 
-        MDTextField :
-            id : ht
-            multiline : False
-            pos_hint : {"x":0.45,"y":0.6}
-            hint_text:"必須"
-            helper_text : "Max 2.50m"
-            text:"123"
-        MDLabel:
-            text:"性別:"
-            pos_hint : {"center_x":0.85,"center_y":0.465}
-        MDLabel:
-            text:"男性"
-            pos_hint : {"center_x":0.95,"center_y":0.465}
-        CheckBox:
-            id: male_gender
-            group: "gender"
-            active: False
-            pos_hint: {"x":0.45,"y":0.45}
-            size_hint : 0.15,0.035
-        MDLabel:
-            text:"女性"
-            pos_hint : {"center_x":1.1,"center_y":0.465}
-        CheckBox:
-            id: female_gender
-            group: "gender"
-            active: False
-            pos_hint: {"x":0.60,"y":0.45}
-            size_hint : 0.15,0.035
-        MDLabel:
-            text:"他の"
-            pos_hint : {"center_x":1.25,"center_y":0.465}
-        CheckBox:
-            id: other_gender
-            group: "gender"
-            active: False
-            pos_hint: {"x":0.75,"y":0.45}
-            size_hint : 0.15,0.035
+                    size_hint_x:1.0
+                    mode :"rectangle"
+
+                MDLabel :
+                    text : "身長"
+                    bold : True
+                    halign:"left"
+                    font_size : "20sp"
+
+                    size_hint_y:0.15
+                    size_hint_x:1.0
 
 
+                MDTextField :
+                    id : ht
+                    multiline : False
+                    mode :"rectangle"
+                    hint_text:"必須"
+                    helper_text : "Max 2.50m"
+                    text:"123"
+                    size_hint_x:1.0
+                    required: True
 
 
+            GridLayout:
+                rows:1
+                column:6
+
+                halign:"left"
+
+                row_default_height :"50"
+
+                pos_hint:{"center_x" : 0.5, "center_y" : 0.45}
 
 
-        MDLabel :
-            id : error_label_main_age
-            text : ""
-            pos_hint : {"x":0.45,"center_y":0.73}
-            size_hint_x :1
-            theme_text_color: "Custom"
-            text_color: "red"
-        MDLabel :
-            id : error_label_main_ht
-            text : ""
-            pos_hint : {"x":0.45,"center_y":0.57}
-            size_hint_x :1
-            theme_text_color: "Custom"
-            text_color: "red"
+                size_hint_y:0.3
+                size_hint_x:0.8
+                MDLabel:
+                    text:"性別:"
 
-        MDRectangleFlatButton :
-            pos_hint : {"x":0.45,"y":0.3}
-            text : "Start"
-            on_release :
-                root.data_call()
+                MDLabel:
+                    text:"男性"
+                    halign :"right"
+                    font_size : "20sp"
+
+
+                CheckBox:
+                    id: male_gender
+                    group: "gender"
+                    active: False
+
+                    size_hint : 0.30,0.035
+                MDLabel:
+                    text:"女性"
+                    halign:"right"
+                    font_size : "20sp"
+
+                CheckBox:
+                    id: female_gender
+                    group: "gender"
+                    active: False
+                    size_hint : 0.30,0.035
+                MDLabel:
+                    text:"他の"
+                    halign:"right"
+                    font_size : "20sp"
+
+                CheckBox:
+                    id: other_gender
+                    group: "gender"
+                    active: False
+                    size_hint : 0.30,0.035
+            GridLayout
+                rows:2
+                column:1
+
+                halign:"left"
+
+                row_default_height :"50"
+
+                pos_hint:{"center_x" : 0.5, "center_y" : 0.5}
+                size_hint_y:0.1
+                size_hint_x:0.8
+                MDLabel :
+                    id : error_label_main
+                    text : ""
+                    size_hint_x :1
+                    theme_text_color: "Custom"
+                    text_color: "red"
+                MDRectangleFlatIconButton :
+                    pos_hint : {"x":0.45,"y":0.3}
+                    text : "スタート"
+                    icon: "play"
+                    size_hint_x:1.0
+                    on_release :
+                        root.data_call()
 
 
 
@@ -255,6 +340,8 @@
         id : test_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
+        size_hint_x : 0.5
+        size_hint_y  : 0.3
     MDRectangleFlatButton:
         text : "成功"
         pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
@@ -302,32 +389,75 @@
 
 
 <ResultWindow>:
-
     name : "result"
-    MDLabel :
-        id:result_label_comment
-        text : "You Old"
-        halign: "center"
-        size_hint_x :1
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
+    MDFloatLayout:
+        MDGridLayout:
+            halign:"center"
 
-    MDLabel :
-        id:result_label_age
-        text : "You Old"
-        halign: "center"
-        size_hint_x :1
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.45}
-    MDLabel :
-        id:result_label_rage
-        halign: "center"
-        size_hint_x :1
-        text : "You Old"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
+            row_default_height :"70"
+
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.85}
+
+
+            size_hint_y:0.1
+            size_hint_x:0.8
+            column:1
+            rows:1
+            MDCard:
+                fill_color: "red"
+                orientation: "horizontal"
+                padding:"20dp"
+                MDLabel:
+                    halign:"center"
+                    text:"測定終了しました！ "
+                    font_size:"30sp"
+                    theme_text_color: "Custom"
+                    text_color: "orange"
+
+        MDGridLayout:
+            halign:"center"
+
+            row_default_height :"70"
+
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.55}
+
+
+            size_hint_y: 0.3
+            size_hint_x:0.8
+            column:1
+            rows : 1
+            MDCard:
+                fill_color: "red"
+                orientation: "horizontal"
+                padding:"20dp"
+                GridLayout:
+                    halign:"center"
+
+                    row_default_height :"20"
+
+                    size_hint_x:0.8
+                    column:1
+                    rows : 3
+                    MDLabel :
+                        id:result_label_comment
+                        text : "Comment"
+                        halign: "center"
+                        size_hint_x :0.8
+                    MDLabel :
+                        id:result_label_rage
+                        halign: "center"
+                        size_hint_x :0.8
+                        text : "D_Age"
+
+
+
+
+
 
 
     MDRectangleFlatButton :
-        text : "End"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        text : "測定終了"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.15}
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "up"
@@ -347,33 +477,78 @@
 <TitleWindow>:
 
     name : "title"
-
-    MDLabel :
-        id:title_label
-        text : "ロコモ年齢自動測定システムの利用について"
-        font_size : '25sp'
-        size_hint_x : 1
-        halign : "center"
-        underline : True
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
-
-
-    MDLabel :
-        text : "       測定結果とコメントについてこのロコモ年齢測定システム\nは立ち上がり能力からあなたの基礎移動能力の現状と年齢\nに伴う衰退の傾向の予測を行います.測定結果には個人によって\n誤差があり，その評価やコメントは今後の基礎能力維持のための\n参考としてご認識いただけますようお願いします．\n     測定中の事故について本測定システムは安全性の面において，\nできる限りの工夫を行い，市販の電動症候椅子の安全基準を持して\nおりますが，被測者の基礎運動機能の低下や無理な立上がり等による\n転倒の恐れがあります．万が一，転倒による怪我が生じた場合，研究\n開発側は一切の責任を負いかねますのであらかじめご了承ください."
-        pos_hint : {"center_x" : 0.6, "center_y" : 0.6}
-        size_hint_x : 1
+    FloatLayout:
+        MDLabel :
+            id:title_label
+            text : "ロコモ年齢自動測定システムの利用について"
+            font_size : '24sp'
+            size_hint_x : 0.8
+            halign : "center"
+            underline : True
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.85}
+        MDGridLayout:
+            halign:"center"
 
 
 
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.75}
 
-    MDRectangleFlatButton :
-        text : "承知しました"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
-        size_hint : 0.3,0.05
-        ripple_behaviour :True
-        on_release :
-            app.root.current = "main"
-            root.manager.transition.direction = "left"
+
+            size_hint_y:0.8
+            size_hint_x:0.8
+            column:1
+            rows:3
+
+            Widget:
+                size_hint_y:0.8
+                size_hint_x: None
+
+            MDCard:
+                orientation: 'vertical'
+                pos_hint:{"center_x" : 0.5 , "center_y" : 1.0}
+                size_hint_y : 1.0
+                padding: "10dp"
+                style:"elevated"
+                adaptive_style: True
+
+
+
+
+
+
+
+                MDLabel :
+                    text : "\u2022　測定結果とコメントについてこのロコモ年年齢測定システムは立ち上がり能力からあなたの基礎移動能力の現状と年齢に伴う衰退の傾向の予測を行います. "
+
+                    halign :"left"
+                MDLabel :
+                    text : "\u2022　測定結果には個人によって誤差があり，その評価やコメントは今後の基礎能力維持のための参考としてご認識いただけますようお願いします.\n  "
+
+
+                    halign :"left"
+                MDLabel :
+                    text : " \u2022　測定中の事故について本測定システムは安全性の面において，できる限りの工夫を行い，市販の電動症候椅子の安全基準を持しておりますが，被測者の基礎運動機能の低下や無理な立上がり等による転倒の恐れがあります．\n"
+
+
+                    halign :"left"
+                MDLabel :
+                    text : "\u2022　万が一，転倒による怪我が生じた場合，研究開発側は一切の責任を負いかねますのであらかじめご了承ください. "
+
+
+                    halign :"left"
+
+
+
+
+
+        MDRectangleFlatButton :
+            text : "承知しました"
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.20}
+            size_hint : 0.3,0.05
+            ripple_behaviour :True
+            on_release :
+                app.root.current = "main"
+                root.manager.transition.direction = "left"
 
 
 
@@ -394,8 +569,9 @@
             orientation: 'horizontal'
 <LoadingWindow>:
     name : "loading"
-    on_enter:
-        root.loading()
+
+
+
 
 
 
@@ -433,15 +609,17 @@
 
     MDLabel :
         id:loading_label
-        text : "お待ちしてください。。。"
+        text : "座面高さ調整中.\n座ったまままで待ってください."
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.4}
         halign :"center"
         size_hint_x :1
 
 
 
-    MDRectangleFlatButton :
+    MDRectangleFlatIconButton :
+
         id : load_button
+        icon:"arrow-right"
         text : "Proceed"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         disabled : True
@@ -456,10 +634,10 @@
     name : "connect"
     MDLabel :
         id:connect_label
-        text : "サーバーとの接続が切断されています.接続状況を確認してください"
+        text : "サーバーとの接続が切断されています.\n接続状況を確認してください"
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
         halign : "center"
-        size_hint_x : 1.2
+        size_hint_x : 0.8
     MDRectangleFlatButton :
         id : connect_return
         text : "Return"
@@ -476,138 +654,185 @@
             root.reconnect()
 
 <MaintenanceWindow>
-
-
     name : "maintenance"
-    MDLabel :
-        id: maintenance_title
-        font_size : '25sp'
-        text : "メンテナンス画面"
-        underline : True
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
-        halign :"center"
-        size_hint_x :1
-    MDRectangleFlatButton :
-        id : maintenance_button_start
-        font_size : '14sp'
-        size_hint :0.25 ,0.035
-        text : "座面高さ校正開始➡"
-        pos_hint : {"center_x" : 0.15 , "center_y" : 0.85}
-        on_release:
-            root.enable_test()
+    FloatLayout:
 
-    MDLabel :
-        font_size : '14sp'
-        text : "1)手動で座面高さを10㎝に合わせる"
-        pos_hint : {"center_x" : 0.215 , "center_y" : 0.80}
-        size_hint_x :1.3
-        halign :"center"
-    MDLabel :
-        id : test1
-        font_size : '14sp'
-        text : "現在の座面高さ＿＿㎝"
-        pos_hint : {"center_x" : 0.315 , "center_y" : 0.75}
-        size_hint_x :1
-        halign :"center"
+        MDLabel :
+            id: maintenance_title
+            font_size : '25sp'
+            text : "メンテナンス画面"
+            underline : True
+            pos_hint : {"center_x": 0.5,"center_y": 0.9}
+            halign :"center"
+            size_hint_x :1
+        MDRectangleFlatIconButton :
+            id : maintenance_button_start
+            icon:"play"
+            font_size : '14sp'
+            mode:"round"
+            size_hint :0.8 ,0.035
+            fill_color: "white"
+            text : "座面高さ校正開始"
+            pos_hint : {"center_x":0.5,"center_y" : 0.85}
 
-    MDRectangleFlatButton :
-        id : maintenance_button_1
-        font_size : '14sp'
-        size_hint :0.20 ,0.035
-        text : "測定開始"
-        pos_hint : {"center_x" : 0.6 , "center_y" : 0.75}
-        disabled : True
-        on_release:
-            root.test_1()
+            halign :"center"
+            on_release:
+                root.enable_test()
+        GridLayout:
+            halign:"center"
+            row_force_default :"True"
+            row_default_height :"80"
+
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.70}
+            rows: 2
+
+            size_hint_y:0.2
+            size_hint_x:0.8
+            BoxLayout:
+                size_hint_x:1
+                MDLabel :
+                    font_size : '14sp'
+                    text : "1)手動で座面高さを10㎝に合わせる"
+                    rows:1
+
+            BoxLayout:
+                MDLabel :
+                    id : test1
+                    font_size : '14sp'
+                    text : "　　　　　　　現在の座面高さ＿＿㎝"
+
+                MDRectangleFlatButton :
+                    id : maintenance_button_1
+                    font_size : '14sp'
+                    size_hint_x:1.0
+                    size_hint_y:1.5
+                    text : "測定開始"
+                    rows:2
+                    disabled : True
+                    on_release:
+                        root.test_1()
+        GridLayout:
+            halign:"center"
+            row_force_default :"True"
+            row_default_height :"80"
+
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.5}
+            rows: 2
+
+            size_hint_y:0.2
+            size_hint_x:0.8
+            BoxLayout:
+                size_hint_x:1
+                MDLabel :
+                    font_size : '14sp'
+                    text : "2)手動で座面高さを40㎝に合わせる"
+                    rows:1
+
+            BoxLayout:
+                MDLabel :
+                    id : test2
+                    font_size : '14sp'
+                    text : "　　　　　　　現在の座面高さ＿＿㎝"
+
+                MDRectangleFlatButton :
+                    id : maintenance_button_2
+                    font_size : '14sp'
+                    size_hint_x:1.0
+                    size_hint_y:1.5
+                    text : "測定開始"
+                    rows:2
+                    disabled : True
+                    on_release:
+                        root.test_2()
 
 
-    MDLabel :
-        font_size : '14sp'
-        text : "2)手動で座面高さを40㎝に合わせる"
-        pos_hint : {"center_x" : 0.215 , "center_y" : 0.60}
-        size_hint_x :1
-        halign :"center"
-    MDLabel :
-        id : test2
-        font_size : '14sp'
-        text : "現在の座面高さ＿＿㎝\n"
-        pos_hint : {"center_x" : 0.315 , "center_y" : 0.55}
-        size_hint_x :1
-        halign :"center"
-
-    MDRectangleFlatButton :
-        id : maintenance_button_2
-        font_size : '14sp'
-        size_hint :0.20 ,0.035
-        text : "測定開始"
-        pos_hint : {"center_x" : 0.6 , "center_y" : 0.55}
-        disabled : True
-        on_release:
-            root.test_2()
-
-    MDLabel :
-        font_size : '14sp'
-        text : "座面高さ校正結果:"
-        pos_hint : {"center_x" : 0.315 , "center_y" : 0.35}
-        size_hint_x :1
-        halign :"center"
-
-    MDLabel :
-        id : result
-        font_size : '14sp'
-        text : "A：＿＿\nB：＿＿"
-        pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
-        size_hint_x :1
-        halign :"center"
 
 
-    MDRectangleFlatButton :
-        id : maintenance_end
-        font_size : '14sp'
-        size_hint :0.20 ,0.035
-        text : "測定終了"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.2}
-        disabled : True
-        on_release:
-            root.exit()
-    MDTopAppBar:
 
-        left_action_items: [['arrow-left', lambda x: root.back()]]
+        MDLabel :
+            font_size : '14sp'
+            text : "座面高さ校正結果:"
+            pos_hint : {"center_x" : 0.315 , "center_y" : 0.35}
+            size_hint_x :1
+            halign :"center"
+
+        MDLabel :
+            id : result
+            font_size : '14sp'
+            text : "A：＿＿\nB：＿＿"
+            pos_hint : {"center_x" : 0.53 , "center_y" : 0.340}
+            size_hint_x :1
+            halign :"center"
+
+
+        MDRectangleFlatButton :
+            id : maintenance_end
+            font_size : '14sp'
+            size_hint :0.20 ,0.035
+            text : "測定終了"
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.2}
+            disabled : True
+            on_release:
+                root.back()
+        MDTopAppBar:
+
+            left_action_items: [['arrow-left', lambda x: root.back()]]
 
 <ExplanationWindow>
 
     name : "explain"
+    MDFloatLayout:
+        MDLabel :
+            id:title_label
+            text : "測定姿勢と立上がり動作の説明"
+            font_size : '25sp'
+            underline : True
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
+            size_hint_x : 1
+            halign :"center"
+        MDGridLayout:
+            halign:"center"
 
-    MDLabel :
-        id:title_label
-        text : "測定姿勢と立上がり動作の説明"
-        font_size : '25sp'
-        underline : True
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
-        size_hint_x : 1
-        halign :"center"
 
 
-    MDLabel :
-        text : "➡立上がり姿勢：\n        立上がりは右の絵のような姿勢で，背中を背もたれに当て\n    て，両手を胸の前に組み，両足または片足で行います．片足の\n    場合は右足と左足のどちらでも良いです．\n       踵は立ち上がりしやすいように，後ろに引いて置いてくださ\n    い．脛と地面の角度は約70°となります\n    "
-        pos_hint : {"center_x" : 0.7, "center_y" :0.75}
-        size_hint_x : 1.2
-        halign :"left"
-    MDLabel :
-        text : "➡ 立上がり動作：\n       無理なく，ゆっくり立上がり，そのままを３秒程度維持して\n   ください．その後椅子に座り，結果を選んでください\n   "
-        pos_hint : {"center_x" : 0.7, "center_y" :0.62}
-        size_hint_x : 1.2
-        halign :"left"
-    MDLabel :
-        text : "➡立上がり結果：\n        立ち上がりの結果はご自分で判断し，画面の「成功」または\n  「失敗」のボターンをクリックしてください． 「やり直し」を\n   クリックした場合，１回の直しはできます．"
-        pos_hint : {"center_x" : 0.7, "center_y" :0.52}
-        size_hint_x : 1.2
-        halign :"left"
-    MDLabel :
-        text : "➡座面高さ調整：\n        座面高さは測定結果に応じて自動調整します．座ったままで\n   画面に指示に従ってください． "
-        pos_hint : {"center_x" : 0.7, "center_y" :0.40}
-        size_hint_x : 1.2
-        halign :"left"
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.5}
+
+
+            size_hint_y:0.65
+            size_hint_x:0.8
+            column:1
+            rows:1
+
+
+
+            MDCard:
+                orientation: 'vertical'
+                pos_hint:{"center_x" : 0.5 , "center_y" : 1.0}
+                size_hint_y : 1.0
+                padding: "20dp"
+                style:"elevated"
+                adaptive_style: True
+
+
+                MDLabel :
+                    text : "\u2022上がり姿勢： \n立上がりは右の絵のような姿勢で，背中を背もたれに当てて，両手を胸の前に組み，両足または片足で行います．片足の場合は右足と左足のどちらでも良いです.踵は立ち上がりしやすいように，後ろに引いて置いてください．脛と地面の角度は約70°となります\n    "
+
+                    halign :"left"
+                MDLabel :
+                    text : "\u2022立上がり動作： \n無理なく，ゆっくり立上がり，そのままを３秒程度維持してください．その後椅子に座り，結果を選んでください "
+
+
+                    halign :"left"
+                MDLabel :
+                    text : "\u2022立上がり結果： \n 立ち上がりの結果はご自分で判断し，画面の「成功」または「失敗」のボターンをクリックしてください． 「やり直し」をクリックした場合，１回の直しはできます．\n"
+
+
+                    halign :"left"
+                MDLabel :
+                    text : "\u2022座面高さ調整： \n座面高さは測定結果に応じて自動調整します．座ったままで画面に指示に従ってください． "
+
+
+                    halign :"left"
     MDTopAppBar:
 
         left_action_items: [['arrow-left', lambda x: root.back()]]
@@ -617,20 +842,14 @@
 
     MDRectangleFlatButton :
         text : "承知しました。測定開始"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.1}
         size_hint : 0.3,0.05
 
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "left"
 
-    MDRectangleFlatButton :
-        text : "戻る"
-        pos_hint : {"" : 0.1 , "center_y" : 0.980}
-        size_hint : 0.2,0.035
-        on_release :
-            app.root.current = "title"
-            root.manager.transition.direction = "down"
+
     MDTopAppBar:
 
         left_action_items: [['arrow-left', lambda x: root.back()]]

@@ -1,6 +1,6 @@
 [app]
 
-
+ccache :True
 # (str) Title of your application
 title = Locomotion
 
@@ -14,7 +14,7 @@ package.domain = org.pythonProject1
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py,png,jpg,kv,atlas,ttf,ttc,txt
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -38,7 +38,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,Kivy==2.1.0,idna==3.4,Kivy-Garden==0.1.5,kivy-garden.graph==0.4.0,kivymd==1.1.1,numpy,plyer==2.1.0,Pygments==2.15.1,PyOpenGL==3.1.6,PyOpenGL-accelerate==3.1.6,pypiwin32==223,requests==2.28.2,urllib3==1.26.15
+requirements = python3,Kivy==2.1.0,Kivy-Garden==0.1.5,kivymd==1.1.1
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -67,7 +67,7 @@ orientation = portrait
 osx.python_version = 3
 
 # Kivy version to use
-osx.kivy_version = 2.0.0
+osx.kivy_version = 2.1.0
 
 #
 # Android specific
@@ -94,7 +94,7 @@ fullscreen = 0
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 
 # (list) Permissions
-#android.permissions = INTERNET
+android.permissions = INTERNET
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
@@ -115,7 +115,7 @@ android.api = 30
 #android.ndk_api = 21
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
-#android.private_storage = True
+android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
 #android.ndk_path =

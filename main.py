@@ -1,4 +1,6 @@
 import sys
+import threading
+from kivy.clock import Clock
 
 from kivy.animation import Animation
 from kivy.lang import Builder
@@ -18,8 +20,6 @@ from client import *
 
 from time import sleep
 from kivy.core.text import LabelBase
-
-LabelBase.register(name='takao', fn_regular="TakaoPGothic.ttf")
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -72,16 +72,8 @@ class TitleWindow(Screen):  # connection to server may start here
         self.manager.transition.direction = "up"
 
     def start_maintenance(self):
-        try:
-            self.manager.current = "maintenance"
-            self.manager.transition.direction = "right"
-        except Exception as e:
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
-
-            pass
-
-
+        self.manager.current = "maintenance"
+        self.manager.transition.direction = "right"
 
     def connection(self):
         try:
@@ -106,6 +98,7 @@ class TitleWindow(Screen):  # connection to server may start here
             # msg = input()
             self.sock.send_data(msg)
             break
+
     def info(self):
         self.manager.current = "explain"
         self.manager.transition.direction = "left"
@@ -144,7 +137,6 @@ class MainWindow(Screen):
         MainWindow.std_height = 0  # Capital Ho
         self.seat = 0
 
-
     def data_call(self):
         with open("calculation.txt", mode="r") as myfile:
             data = myfile.read()
@@ -157,8 +149,6 @@ class MainWindow(Screen):
         test1_screen = self.manager.get_screen("test")
         main_screen = self.manager.get_screen("main")
         control = self.manager.get_screen('title')
-
-
 
         # Collect all the data from the Text Input Field in "project1.kv"
 
@@ -173,38 +163,39 @@ class MainWindow(Screen):
         # Address API
         # Radio Button for Gender
         # Space or Tab will be neglected
-        if ht_text == "" or str(ht_text.isnumeric()) == "False":
-            main_screen.ids.error_label_main_ht.text = "*身長を入力してください！"
-            ht_flag = 1
-            return 0
+        ht_flag = 1
+        age_flag = 1
+        while ht_flag == 1 or age_flag == 1:
+            if ht_text == "" or str(ht_text.isnumeric()) == "False":
+                main_screen.ids.error_label_main.text = "*身長を入力してください！"
+
+                return 0
 
 
-        else:
-            main_screen.ids.error_label_main_ht.text = ""
+            else:
+                main_screen.ids.error_label_main.text = ""
+                ht_flag = 0
+
+            if age_text == "" or str(age_text.isnumeric()) == "False":
+                main_screen.ids.error_label_main.text = "*年齢を入力してください！"
+
+                return 0
+            elif int(age_text) <= 15 or int(age_text) > 150:
+                main_screen.ids.error_label_main.text = "*年齢にエラー (15~150)"
+
+                return 0
+            else:
+                age_flag = 0
+                main_screen.ids.error_label_main.text = ""
+
+        try:
+            control.send_data("START")
+            sleep(0.1)
 
 
-        if age_text == "" or str(age_text.isnumeric()) == "False":
-            main_screen.ids.error_label_main_age.text = "*年齢を入力してください！"
-
-            age_flag = 1
-            return 0
-        elif int(age_text) <= 15 or int(age_text) > 150:
-            main_screen.ids.error_label_main_age.text = "*年齢にエラー (15~150)"
-
-            return 0
-        else:
-            main_screen.ids.error_label_main_age.text = ""
-
-
-        if age_flag == 0 and ht_flag == 0 :
-            try:
-                control.send_data("START")
-                sleep(0.1)
-
-
-            except Exception as e:
-                self.manager.current = "connect"
-                self.manager.transition.direction = "left"
+        except Exception as e:
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
 
         MainWindow.age = int(age_text)
         MainWindow.ht = int(ht_text)
@@ -249,11 +240,11 @@ class MainWindow(Screen):
         main_screen.ids.ht.text = ""
         main_screen.ids.age.text = ""
 
-
     def back(self):
         self.manager.current = "title"
         self.manager.transition.direction = "right"
         pass
+
 
 # Have to add the picture on the posture + what is やり直しmeans
 class TestWindow(Screen):
@@ -301,13 +292,12 @@ class TestWindow(Screen):
                 pass
 
             result_screen = self.manager.get_screen("result")
-            result_screen.ids.result_label_comment.text = C[self.cnt]
-            result_screen.ids.result_label_age.text = f'貴殿の年齢は :{(str(MainWindow.age))}'
-            result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+            if self.rating < -20:
 
-            print(self.rating)
-            print(MainWindow.age)
-            print(test_array[MainWindow.nt][3])
+                result_screen.ids.result_label_comment.text = C[self.cnt]
+            else:
+                result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+                result_screen.ids.result_label_comment.text = C[self.cnt]
 
         pass
 
@@ -325,13 +315,13 @@ class TestWindow(Screen):
         if TestWindow.c < 3:
             self.manager.current = "loading"
             self.manager.transition.direction = "left"
+
     def retry(self):
 
         self.manager.get_screen(
-                    "test").ids.test2_label.text = 'もう一度せき着席して、もう一度試してください'
+            "test").ids.test2_label.text = 'もう一度せき着席して、もう一度試してください'
 
         pass
-
 
     def passed(self):
         if TestWindow.c < 3:
@@ -375,7 +365,7 @@ class TestWindow(Screen):
             self.prev = 0
             TestWindow.c = TestWindow.c + 1
             MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
-            MainWindow.seat_height = MainWindow.a*MainWindow.seat_height+MainWindow.b
+            MainWindow.seat_height = MainWindow.a * MainWindow.seat_height + MainWindow.b
             print(f'seat Height is {MainWindow.seat_height} and do it with {test_array[MainWindow.nt][1]}')
             control = self.manager.get_screen('title')
             self.send_text = MainWindow.seat_height
@@ -452,7 +442,12 @@ class LoadingWindow(Screen):  # incomplete
 
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
+
         self.response = 0
+
+    def on_enter(self):
+        Clock.schedule_once(self.loading)
+        Clock.schedule_once(self.enable_load_button)
 
     def loading(self, *kwargs):
         loading_grid = self.ids.loading
@@ -468,23 +463,25 @@ class LoadingWindow(Screen):  # incomplete
         # print(self.response)
         load_screen.ids.load_button.disabled = True
 
-    def enable_load_button(self):
+    def enable_load_button(self, *kwargs):
+
+
         load_screen = self.manager.get_screen("loading")
         control = self.manager.get_screen('title')
-        while True:
-            try:
 
-                self.response = control.get_data()
-                if self.response.decode('utf-8') == "OK":
-                    print(self.response.decode('utf-8'))
-                    sleep(1)
-                    load_screen.ids.load_button.disabled = False
-                    break
-                else:
-                    print("Wrong Data")
-                    print(self.response.decode('utf-8'))
-            finally:
-                pass
+        def check_response(dt):
+            self.response = control.get_data()
+            if self.response.decode('utf-8') == "OK":
+                print(self.response.decode('utf-8'))
+                load_screen.ids.load_button.disabled = False
+            else:
+                print("Wrong Data")
+                print(self.response.decode('utf-8'))
+                # Schedule the check_response function again after a delay
+                Clock.schedule_once(check_response, 1.0)  # Adjust the delay as needed
+
+        # Start checking for the response
+        Clock.schedule_once(check_response, 0.0)  # Start immediately
 
 
 class MaintenanceWindow(Screen):
@@ -514,11 +511,13 @@ class MaintenanceWindow(Screen):
 
     def enable_test(self):
         self.set_button_state('maintenance_button_1', False)
+        self.set_button_state('maintenance_button_start', True)
 
     def back(self):
         self.manager.current = "title"
         self.manager.transition.direction = "left"
         pass
+
     def test_1(self):
         maintenance = self.manager.get_screen('maintenance')
         self.set_button_state('maintenance_button_1', True)
@@ -563,7 +562,6 @@ class MaintenanceWindow(Screen):
         self.send_data("EXIT")
         pass
 
-
     pass
 
 
@@ -572,8 +570,6 @@ class ResultWindow(Screen):
 
 
 class ExplanationWindow(Screen):
-
-
 
     def back(self):
         self.manager.current = "title"
@@ -599,18 +595,22 @@ class ConnectionWindow(Screen):  # establish connection Here if not then have a 
         self.manager.transition.direction = "up"
 
     pass
+
+
 class Overlay(BoxLayout):
     pass
 
+
 class NavDrawer(BoxLayout):
     pass
+
+
 class MyMainApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Orange"  # Choose a darker color palette, like "Gray"
         self.theme_cls.primary_hue = "800"
         self.theme_cls.secondary_palette = "Grey"
-
 
         return WindowManager()
 

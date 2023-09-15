@@ -65,7 +65,7 @@ def maintenance(response, data):
 def server(response, comm):
     serversocket = socket.socket()
 
-    SERVER_ADDRESS = ("localhost", 8000)
+    SERVER_ADDRESS = ("localhost", 8888)
     serversocket.bind(SERVER_ADDRESS)
 
     serversocket.listen(5)
