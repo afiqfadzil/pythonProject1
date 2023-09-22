@@ -1,15 +1,13 @@
 import sys
 import threading
 from kivy.clock import Clock
-
+import webbrowser
 from kivy.animation import Animation
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
-from kivy.utils import platform
 from kivymd.app import MDApp
 
 from kivy.core.window import Window
@@ -79,8 +77,8 @@ class TitleWindow(Screen):  # connection to server may start here
         try:
             self.sock = MySocket(host=AddressScreen.ip)
             print(self.sock)
-            # Thread(target=self.send_data).start()
-            # Thread(target=self.get_data).start()
+            threading.Thread(target=self.send_data).start()
+            threading.Thread(target=self.get_data).start()
             self.manager.current = "title"
             self.manager.transition.direction = "left"
         except Exception as e:
@@ -295,9 +293,11 @@ class TestWindow(Screen):
             if self.rating < -20:
 
                 result_screen.ids.result_label_comment.text = C[self.cnt]
-            else:
                 result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+
+            else:
                 result_screen.ids.result_label_comment.text = C[self.cnt]
+                result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
 
         pass
 
@@ -446,7 +446,7 @@ class LoadingWindow(Screen):  # incomplete
         self.response = 0
 
     def on_enter(self):
-        Clock.schedule_once(self.loading)
+
         Clock.schedule_once(self.enable_load_button)
 
     def loading(self, *kwargs):
@@ -465,7 +465,6 @@ class LoadingWindow(Screen):  # incomplete
 
     def enable_load_button(self, *kwargs):
 
-
         load_screen = self.manager.get_screen("loading")
         control = self.manager.get_screen('title')
 
@@ -478,10 +477,11 @@ class LoadingWindow(Screen):  # incomplete
                 print("Wrong Data")
                 print(self.response.decode('utf-8'))
                 # Schedule the check_response function again after a delay
-                Clock.schedule_once(check_response, 1.0)  # Adjust the delay as needed
+                Clock.schedule_once(check_response, 1)  # Adjust the delay as needed
 
         # Start checking for the response
         Clock.schedule_once(check_response, 0.0)  # Start immediately
+        Clock.schedule_once(self.loading)
 
 
 class MaintenanceWindow(Screen):
@@ -560,6 +560,10 @@ class MaintenanceWindow(Screen):
 
     def test_end(self):
         self.send_data("EXIT")
+        self.set_button_state('maintenance_button_start', False)
+        self.manager.current = "title"
+        self.manager.transition.direction = "left"
+
         pass
 
     pass

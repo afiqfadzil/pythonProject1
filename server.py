@@ -16,7 +16,6 @@ def controller(response, comm, data):
         sleep(0.5)
         if control == "START":
             print("this is", control)
-            response.put("(TEST START)===SERVER")
             control = comm.get()
             if control.isdigit():
                 print("this is 2nd", control)
@@ -53,7 +52,8 @@ def controller(response, comm, data):
 
         else:
 
-            pass
+            response.put("OK")
+            print("EXIT SUCCESS")
 
 
 def maintenance(response, data):
@@ -65,7 +65,7 @@ def maintenance(response, data):
 def server(response, comm):
     serversocket = socket.socket()
 
-    SERVER_ADDRESS = ("localhost", 8888)
+    SERVER_ADDRESS = ("localhost", 8000)
     serversocket.bind(SERVER_ADDRESS)
 
     serversocket.listen(5)
