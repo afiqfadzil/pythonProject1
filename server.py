@@ -83,8 +83,11 @@ def server(response, comm):
                 clientsocket.send(str(send_msg).encode())
                 if not recv_msg:
                     print("Connection closed  due to  lack of data")
-            clientsocket.close()
+                    clientsocket.close()
         except ConnectionResetError:
+            print("Connection Reset, Waiting for new connection")
+            clientsocket.close()
+        finally:
             print("Connection Reset, Waiting for new connection")
             clientsocket.close()
 

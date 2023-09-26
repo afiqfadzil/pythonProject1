@@ -8,7 +8,7 @@ class MySocket:
         self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.sock.settimeout(1)
         self.sock.connect((host, port))
-        self.sock.settimeout(15)
+        self.sock.settimeout(60)
 
         print("Connected")
 

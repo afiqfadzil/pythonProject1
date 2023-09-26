@@ -1,5 +1,6 @@
+import queue
 import sys
-import threading
+from multiprocessing import Process
 from kivy.clock import Clock
 import webbrowser
 from kivy.animation import Animation
@@ -9,7 +10,7 @@ from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
-
+from threading import Thread
 from kivy.core.window import Window
 
 from kivy.config import Config
@@ -40,21 +41,6 @@ C = ["Error Check", "素晴らしい基礎運動力です",
      "基礎運動能力がい著しく低下、ちかくの整形外科病院で受診してください"]
 
 
-class TextWindow(Screen):
-    def press(self):
-        data = self.manager.get_screen('text')
-        name = data.ids.name.text
-        email = data.ids.email.text
-        with open("calculation.txt", mode="w") as myfile:
-            myfile.writelines(f"{name},{email}\n")
-            print("Name: ", name, "\nEmail: ", email, "\nADDED!")
-
-        data.ids.name.text = ""
-        data.ids.email.text = ""
-
-    pass
-
-
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
 # configure so that the program do not crash if not connected to a server
@@ -64,6 +50,8 @@ class TitleWindow(Screen):  # connection to server may start here
         self.sock = None
         self.text = 0
         self.send_text = 0
+        self.recv = queue.Queue()
+        self.send = queue.Queue()
 
     def next_screen(self):
         self.manager.current = "main"
@@ -77,8 +65,7 @@ class TitleWindow(Screen):  # connection to server may start here
         try:
             self.sock = MySocket(host=AddressScreen.ip)
             print(self.sock)
-            threading.Thread(target=self.send_data).start()
-            threading.Thread(target=self.get_data).start()
+
             self.manager.current = "title"
             self.manager.transition.direction = "left"
         except Exception as e:
@@ -87,15 +74,21 @@ class TitleWindow(Screen):  # connection to server may start here
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
 
+    def get_data_thread(self):
+        g_data = Thread(target=self.get_data)
+        g_data.start()
+        msg = self.recv.get()
+        return msg
+
     def get_data(self):
-        while True:
-            return self.sock.get_data()
+
+        self.recv.put(self.sock.get_data())
+        return
 
     def send_data(self, msg=None):
-        while True:
+
             # msg = input()
             self.sock.send_data(msg)
-            break
 
     def info(self):
         self.manager.current = "explain"
@@ -444,9 +437,10 @@ class LoadingWindow(Screen):  # incomplete
         super(LoadingWindow, self).__init__(**kw)
 
         self.response = 0
+        self.tmp = 0
 
     def on_enter(self):
-
+        Clock.schedule_once(self.loading)
         Clock.schedule_once(self.enable_load_button)
 
     def loading(self, *kwargs):
@@ -463,13 +457,14 @@ class LoadingWindow(Screen):  # incomplete
         # print(self.response)
         load_screen.ids.load_button.disabled = True
 
+
     def enable_load_button(self, *kwargs):
 
         load_screen = self.manager.get_screen("loading")
         control = self.manager.get_screen('title')
 
-        def check_response(dt):
-            self.response = control.get_data()
+        def check_response(*kwargs):
+            self.response = control.get_data_thread()
             if self.response.decode('utf-8') == "OK":
                 print(self.response.decode('utf-8'))
                 load_screen.ids.load_button.disabled = False
@@ -477,11 +472,13 @@ class LoadingWindow(Screen):  # incomplete
                 print("Wrong Data")
                 print(self.response.decode('utf-8'))
                 # Schedule the check_response function again after a delay
-                Clock.schedule_once(check_response, 1)  # Adjust the delay as needed
+                Clock.schedule_once(check_response, 1.0)  # Adjust the delay as needed
 
+        Clock.schedule_once(check_response, 0.0)  # Adjust the delay as needed
         # Start checking for the response
-        Clock.schedule_once(check_response, 0.0)  # Start immediately
-        Clock.schedule_once(self.loading)
+
+
+
 
 
 class MaintenanceWindow(Screen):
@@ -503,7 +500,7 @@ class MaintenanceWindow(Screen):
     def get_data(self):
         while True:
             control = self.manager.get_screen('title')
-            return control.get_data()
+            return control.get_data_thread()
 
     def send_data(self, msg=None):
         control = self.manager.get_screen('title')
@@ -561,6 +558,8 @@ class MaintenanceWindow(Screen):
     def test_end(self):
         self.send_data("EXIT")
         self.set_button_state('maintenance_button_start', False)
+        self.set_button_state('maintenance_end', True)
+        print(self.get_data())
         self.manager.current = "title"
         self.manager.transition.direction = "left"
 
