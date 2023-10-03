@@ -3,22 +3,26 @@ import sys
 from multiprocessing import Process
 from kivy.clock import Clock
 import webbrowser
+from kivy.factory import Factory
+import socket
 from kivy.animation import Animation
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from threading import Thread
 from kivy.core.window import Window
-
+from kivy.core.text import LabelBase, DEFAULT_FONT  # 追加分
+from kivy.resources import resource_add_path  # 追加分
 from kivy.config import Config
-
 from client import *
-
 from time import sleep
 from kivy.core.text import LabelBase
+
+LabelBase.register(DEFAULT_FONT, 'meiryo.ttc')  # 追加分
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -44,60 +48,11 @@ C = ["Error Check", "素晴らしい基礎運動力です",
 # Task
 # server is included with the relay module program (サーバーとリレーモジュールのプログラムは一緒)
 # configure so that the program do not crash if not connected to a server
-class TitleWindow(Screen):  # connection to server may start here
-    def __init__(self, **kwargs):
-        super(TitleWindow, self).__init__(**kwargs)
-        self.sock = None
-        self.text = 0
-        self.send_text = 0
-        self.recv = queue.Queue()
-        self.send = queue.Queue()
-
-    def next_screen(self):
-        self.manager.current = "main"
-        self.manager.transition.direction = "up"
-
-    def start_maintenance(self):
-        self.manager.current = "maintenance"
-        self.manager.transition.direction = "right"
-
-    def connection(self):
-        try:
-            self.sock = MySocket(host=AddressScreen.ip)
-            print(self.sock)
-
-            self.manager.current = "title"
-            self.manager.transition.direction = "left"
-        except Exception as e:
-            print(str(e))
-            sleep(0.1)
-            self.manager.current = "connect"
-            self.manager.transition.direction = "left"
-
-    def get_data_thread(self):
-        g_data = Thread(target=self.get_data)
-        g_data.start()
-        msg = self.recv.get()
-        return msg
-
-    def get_data(self):
-
-        self.recv.put(self.sock.get_data())
-        return
-
-    def send_data(self, msg=None):
-
-            # msg = input()
-            self.sock.send_data(msg)
-
-    def info(self):
-        self.manager.current = "explain"
-        self.manager.transition.direction = "left"
-
 
 class AddressScreen(Screen):
     def __init__(self, **kwargs):
         super(AddressScreen, self).__init__(**kwargs)
+        AddressScreen.ip = 0
 
     def connect(self):
         title = self.manager.get_screen("title")
@@ -111,6 +66,79 @@ class AddressScreen(Screen):
             self.manager.transition.direction = "left"
 
 
+class MySocket:
+
+    # def __init__(self, host="133.54.230.189", port=8000):
+    def __init__(self):
+        self.sock = None
+
+    def get_data(self):
+        recv_msg = self.sock.recv(1024)
+        return recv_msg
+
+    def send_data(self, send_msg):
+        self.sock.send(send_msg.encode())
+
+
+class TitleWindow(Screen):  # connection to server may start here
+    def __init__(self, **kwargs):
+        super(TitleWindow, self).__init__(**kwargs)
+        self.sock = None
+        self.text = 0
+
+        self.recv = queue.Queue()
+        self.send = queue.Queue()
+
+    def next_screen(self):
+        self.manager.current = "main"
+        self.manager.transition.direction = "up"
+
+    def start_maintenance(self):
+        self.manager.current = "maintenance"
+        self.manager.transition.direction = "right"
+
+    def connection(self):
+        try:
+            Thread(target=self.connection_thread).start()
+            self.manager.current = "title"
+            self.manager.transition.direction = "left"
+        except Exception as e:
+            print(str(e))
+            sleep(0.1)
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
+
+    def connection_thread(self, port=8000):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(1)
+        self.sock.connect((AddressScreen.ip, port))
+        self.sock.settimeout(60)
+
+        print("Connected")
+
+    def get_data_thread(self):
+        self.recv = self.sock.recv(1024)
+        return self.recv
+    def get_data(self):
+        pass
+    def send_data(self, msg=None):
+
+        self.sock.send(msg.encode())
+
+    def info(self):
+        self.manager.current = "explain"
+        self.manager.transition.direction = "left"
+
+
+class PracticePopup(Popup):
+    def btn(self):
+        app = MyMainApp.get_running_app()
+        app.root.current = "main"
+        app.root.transition.direction = "right"
+
+    pass
+
+
 class WindowManager(ScreenManager):
     pass
 
@@ -119,16 +147,16 @@ class MainWindow(Screen):
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
-
+        MainWindow.load_flag = 0
         MainWindow.ht = 0
         MainWindow.nt = 0
         MainWindow.age = 0
         MainWindow.pre_score = 0
         MainWindow.seat_height = 0  # the one that will be sent to the chair
-        MainWindow.std_height = 0  # Capital Ho
+        MainWindow.std_height = 0  # Capital H
         self.seat = 0
 
-    def data_call(self):
+    def data_calculation(self):
         with open("calculation.txt", mode="r") as myfile:
             data = myfile.read()
             MainWindow.a = data.split(",")
@@ -161,7 +189,10 @@ class MainWindow(Screen):
                 main_screen.ids.error_label_main.text = "*身長を入力してください！"
 
                 return 0
+            elif int(ht_text) <= 100 or int(ht_text) > 200:
+                main_screen.ids.error_label_main.text = "*身長は　100cm～200cm　まで入力画面してください"
 
+                return 0
 
             else:
                 main_screen.ids.error_label_main.text = ""
@@ -171,8 +202,8 @@ class MainWindow(Screen):
                 main_screen.ids.error_label_main.text = "*年齢を入力してください！"
 
                 return 0
-            elif int(age_text) <= 15 or int(age_text) > 150:
-                main_screen.ids.error_label_main.text = "*年齢にエラー (15~150)"
+            elif int(age_text) <= 15 or int(age_text) > 95:
+                main_screen.ids.error_label_main.text = "*年齢にエラー (15~95)"
 
                 return 0
             else:
@@ -182,8 +213,6 @@ class MainWindow(Screen):
         try:
             control.send_data("START")
             sleep(0.1)
-
-
         except Exception as e:
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
@@ -208,6 +237,23 @@ class MainWindow(Screen):
         print(MainWindow.nt)
         MainWindow.seat_height = int(MainWindow.std_height * test_array[MainWindow.nt][0])
         MainWindow.seat_height = MainWindow.a * MainWindow.seat_height + MainWindow.b
+
+        self.seat = MainWindow.seat_height
+
+        main_screen.ids.ht.text = ""
+        main_screen.ids.age.text = ""
+
+    def test(self):
+        sleep(0.5)
+        control = self.manager.get_screen('title')
+        MainWindow.load_flag = 0
+        try:
+            control.send_data(str(self.seat))
+        except Exception as e:
+            print(str(e))
+            sleep(0.1)
+            self.manager.current = "connect"
+            self.manager.transition.direction = "left"
         self.manager.current = "loading"
         self.manager.transition.direction = "left"
         if test_array[MainWindow.nt][1] == "One Leg":
@@ -220,16 +266,34 @@ class MainWindow(Screen):
                 "test").ids.test_image.source = 'assets/two_leg.png'
             self.manager.get_screen(
                 "test").ids.test2_label.text = '両足で立ち上がり，３秒間姿勢を維持してください．\n．その後，椅子に座って，結果を選んでください．'
-        self.seat = MainWindow.seat_height
+
+        pass
+
+    def practice(self):
+        sleep(0.5)
+        control = self.manager.get_screen('title')
         try:
             control.send_data(str(self.seat))
+            MainWindow.load_flag = 1
         except Exception as e:
             print(str(e))
             sleep(0.1)
             self.manager.current = "connect"
             self.manager.transition.direction = "left"
-        main_screen.ids.ht.text = ""
-        main_screen.ids.age.text = ""
+        self.manager.current = "loading"
+        self.manager.transition.direction = "left"
+        if test_array[MainWindow.nt][1] == "One Leg":
+            self.manager.get_screen(
+                "practice").ids.practice_image.source = 'assets/one_leg.png'
+            self.manager.get_screen(
+                "practice").ids.practice_label.text = '片足で立ち上がり，３秒間姿勢を維持してください.\n練習終わったら”練習終了”のボタンを押してください.'
+        elif test_array[MainWindow.nt][1] == "Two Legs":
+            self.manager.get_screen(
+                "practice").ids.practice_image.source = 'assets/two_leg.png'
+            self.manager.get_screen(
+                "practice").ids.practice_label.text = '両足で立ち上がり，３秒間姿勢を維持してください.\n練習終わったら”練習終了”のボタンを押してください.'
+
+        pass
 
     def back(self):
         self.manager.current = "title"
@@ -237,7 +301,10 @@ class MainWindow(Screen):
         pass
 
 
-# Have to add the picture on the posture + what is やり直しmeans
+class PracticeWindow(Screen):
+    pass
+
+
 class TestWindow(Screen):
     # R = MainWindow.age - test_array[MainWindow.nt][3]
 
@@ -457,7 +524,6 @@ class LoadingWindow(Screen):  # incomplete
         # print(self.response)
         load_screen.ids.load_button.disabled = True
 
-
     def enable_load_button(self, *kwargs):
 
         load_screen = self.manager.get_screen("loading")
@@ -477,8 +543,15 @@ class LoadingWindow(Screen):  # incomplete
         Clock.schedule_once(check_response, 0.0)  # Adjust the delay as needed
         # Start checking for the response
 
+    def switch(self):
+        print("load_flag =", MainWindow.load_flag)
+        if MainWindow.load_flag == 0:
+            self.manager.current = "test"
+            self.manager.transition.direction = "left"
 
-
+        elif MainWindow.load_flag == 1:
+            self.manager.current = "practice"
+            self.manager.transition.direction = "left"
 
 
 class MaintenanceWindow(Screen):
@@ -614,8 +687,8 @@ class MyMainApp(MDApp):
         self.theme_cls.primary_palette = "Orange"  # Choose a darker color palette, like "Gray"
         self.theme_cls.primary_hue = "800"
         self.theme_cls.secondary_palette = "Grey"
-
-        return WindowManager()
+        self.sm = WindowManager()
+        return self.sm
 
 
 # Press the green button in the gutter to run the script.

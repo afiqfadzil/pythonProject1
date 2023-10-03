@@ -1,40 +1,14 @@
 <WindowManager>:
     AddressScreen:
-    ResultWindow:
-
-    MaintenanceWindow:
     MainWindow:
-
-
-
+    PracticeWindow:
+    ResultWindow:
+    MaintenanceWindow:
     TestWindow:
-
     TitleWindow:
-
-
-
-
     ConnectionWindow:
-
     LoadingWindow:
-
-
     ExplanationWindow:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -93,10 +67,6 @@
         pos : self.pos
         size : self.size
 
-
-
-
-
 <TextInput>:
     font_size : '20sp'
 
@@ -110,6 +80,7 @@
 <MDRectangleFlatButton>:
     size_hint : 0.1,0.035
     ripple_behaviour :True
+
     md_bg_color : 1,1,1,1
     font_size :'18sp'
 <MDRectangleFlatIconButton>:
@@ -118,8 +89,78 @@
     md_bg_color : 1,1,1,1
     font_size :'18sp'
 
+#:import Factory kivy.factory.Factory
+<PracticePopup>
+    auto_dismiss : False
+    size_hint : 0.5, 0.15
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    title : "練習終了しますか？"
+    font_name: "meiryo.ttc"
+    separator_color :  242/255 ,140/255,40/255,1
+    title_align : "center"
+    MDGridLayout:
+        rows:1
+        cols: 3
+        padding : "20dp"
+        MDRectangleFlatButton:
+            text : "はい"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release :
+                root.dismiss()
+                root.btn()
+        Widget:
+        MDRectangleFlatButton:
+            text : "いいえ"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release : root.dismiss()
 
 
+
+<PracticeWindow>
+    name : "practice"
+    MDLabel :
+        id : practice_label
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
+        halign: "center"
+        size_hint_x :1
+        text :"Under Construction"
+        font_size : self.width/40
+
+    Image :
+        id : practice_image
+        source : 'assets/two_leg.png'
+        pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
+        size_hint_x : 0.5
+        size_hint_y  : 0.3
+    MDRectangleFlatButton:
+        text : "練習を終了"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        on_release :Factory.PracticePopup().open()
+
+
+
+
+
+
+
+
+
+    Overlay:
+        id: dim_overlay
+        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
+        on_touch_down: root.ids.nav_drawer.set_state("closed")
+
+    MDTopAppBar:
+        font_size : "20sp"
+        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
+    MDNavigationDrawer:
+        id: nav_drawer
+        BoxLayout:
+            orientation: 'horizontal'
 
 <AddressScreen>
 
@@ -217,7 +258,7 @@
 
                 MDTextField :
                     id : age
-                    text: "123"
+                    text: "65"
                     multiline : False
                     hint_text:"必須"
                     helper_text: "13~150"
@@ -246,7 +287,7 @@
                     mode :"rectangle"
                     hint_text:"必須"
                     helper_text : "Max 2.50m"
-                    text:"123"
+                    text:"175"
                     size_hint_x:1.0
                     required: True
 
@@ -300,14 +341,14 @@
                     active: False
                     size_hint : 0.30,0.035
             GridLayout
-                rows:2
+                rows:3
                 column:1
 
                 halign:"left"
 
                 row_default_height :"50"
-
-                pos_hint:{"center_x" : 0.5, "center_y" : 0.5}
+                padding : "20dp"
+                pos_hint:{"center_x" : 0.5, "center_y" : 0.55}
                 size_hint_y:0.1
                 size_hint_x:0.8
                 MDLabel :
@@ -318,12 +359,23 @@
                     text_color: "red"
                     font_size : self.width/20
                 MDRectangleFlatIconButton :
+                    pos_hint : {"x":0.45,"y":0.2}
+                    text : "測定練習"
+                    icon: "play"
+                    size_hint_x:1.0
+                    on_release :
+                        root.data_calculation()
+                        root.practice()
+
+                MDRectangleFlatIconButton :
                     pos_hint : {"x":0.45,"y":0.3}
                     text : "スタート"
                     icon: "play"
                     size_hint_x:1.0
                     on_release :
-                        root.data_call()
+                        root.data_calculation()
+                        root.test()
+
 
 
 
@@ -772,8 +824,7 @@
         disabled : True
         on_release :
             root.disable_load_button()
-            app.root.current = "test"
-            root.manager.transition.direction = "up"
+            root.switch()
 
 
 <ConnectionWindow>

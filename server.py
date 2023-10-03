@@ -15,7 +15,6 @@ def controller(response, comm, data):
 
         sleep(0.5)
         if control == "START":
-            print("this is", control)
             control = comm.get()
             if control.isdigit():
                 print("this is 2nd", control)
