@@ -1,6 +1,8 @@
 <WindowManager>:
     AddressScreen:
     MainWindow:
+
+
     PracticeWindow:
     ResultWindow:
     MaintenanceWindow:
@@ -21,6 +23,7 @@
 <MDTopAppBar>:
     title: "Locomotion Age Measurement"
     title_size : "20sp"
+    title_font_name :"meiryo.ttc"
     size_hint: (1, 0.1)
     elevation: 10
     pos_hint : {"center_x" : 0.5 , "center_y" : 0.975}
@@ -89,7 +92,71 @@
     md_bg_color : 1,1,1,1
     font_size :'18sp'
 
+
+#Popup Section
 #:import Factory kivy.factory.Factory
+<LoadingPopup>
+    auto_dismiss : False
+    size_hint : 0.5, 0.15
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    title : "測定中、少々お待ちください"
+    font_name: "meiryo.ttc"
+    separator_color :  242/255 ,140/255,40/255,1
+    title_align : "center"
+<MovingPopup>
+    auto_dismiss : False
+    size_hint : 0.5 , 0.25
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    title : "注意"
+    font_name: "meiryo.ttc"
+    separator_color :  242/255 ,140/255,40/255,1
+    title_align : "center"
+    MDGridLayout:
+        row_default_height :"50"
+        rows:2
+        cols: 1
+
+        MDLabel :
+            text : "椅子が動いてますので少々お待ちください。"
+            font_size : self.height/7
+            halign : "center"
+
+        MDRectangleFlatButton:
+            text : "閉じる"
+            size_hint_x : 1
+            halign : "center"
+            on_release :
+                root.dismiss()
+
+<CautionPopup>
+    auto_dismiss : False
+    size_hint : 0.5, 0.15
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    title : "テスト終了しますか？"
+    font_name: "meiryo.ttc"
+    separator_color :  242/255 ,140/255,40/255,1
+    title_align : "center"
+    MDGridLayout:
+        rows:1
+        cols: 3
+        padding : "20dp"
+        MDRectangleFlatButton:
+            text : "はい"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release :
+                root.dismiss()
+                root.btn()
+        Widget:
+        MDRectangleFlatButton:
+            text : "いいえ"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release : root.dismiss()
+
+
 <PracticePopup>
     auto_dismiss : False
     size_hint : 0.5, 0.15
@@ -148,7 +215,6 @@
 
 
 
-
     Overlay:
         id: dim_overlay
         opacity: 1 if root.ids.nav_drawer.state == "open" else 0
@@ -194,17 +260,56 @@
                 color_active: 211/255, 211/255, 211/255, 1
 
 
+        GridLayout:
+            halign:"center"
+            row_force_default :"True"
+            row_default_height :"80"
+
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.60}
+
+
+            size_hint_y:0.2
+            size_hint_x:0.8
+            column:1
+            rows:4
+            MDLabel :
+                font_size : self.width/28
+                size_hint_x:1
+                halign :"left"
+                text : "接続ガイドライン。"
+                underline :True
+            MDLabel :
+                font_size : self.width/28
+                size_hint_x:1
+                halign :"left"
+                text : "1.Wifi設定を開いて「Raspi」と接続してください. パスワード：raspberrypi"
+            MDLabel :
+                font_size : self.width/30
+                size_hint_x:1
+                halign :"left"
+                theme_text_color: "Custom"
+                text_color: "red"
+                text : "注意：「Raspi」と接続後、インターネット接続が使用できなくなりますご承知おきください　"
+            MDLabel :
+                font_size : self.width/30
+                size_hint_x:1
+                halign :"left"
+                theme_text_color: "Custom"
+                text_color: "red"
+                text : "注意：他のデバイス接続中場合は接続が失敗する恐れがありますので、全デバイスとの接続を切ってから接続してください"
 
 
 
 
         MDRectangleFlatButton:
-            pos_hint : {"center_x":0.5,"center_y":0.3}
+            pos_hint : {"center_x":0.5,"center_y":0.15}
             text : "Start"
             halign:"center"
             size_hint_x: 0.7
             on_release :
                 root.connect()
+
+
 
     Overlay:
         id: dim_overlay
@@ -261,9 +366,9 @@
                     text: "65"
                     multiline : False
                     hint_text:"必須"
-                    helper_text: "13~150"
+                    helper_text: "16~95歳"
                     required: True
-
+                    font_name : "meiryo.ttc"
                     size_hint_x:1.0
                     mode :"rectangle"
 
@@ -286,7 +391,7 @@
                     multiline : False
                     mode :"rectangle"
                     hint_text:"必須"
-                    helper_text : "Max 2.50m"
+                    helper_text : "Max 2.00m"
                     text:"175"
                     size_hint_x:1.0
                     required: True
@@ -300,10 +405,10 @@
 
                 row_default_height :"50"
 
-                pos_hint:{"center_x" : 0.5, "center_y" : 0.45}
+                pos_hint:{"center_x" : 0.5, "center_y" : 0.5}
 
 
-                size_hint_y:0.3
+                size_hint_y:0.2
                 size_hint_x:0.8
                 MDLabel:
                     text:"性別:"
@@ -348,9 +453,9 @@
 
                 row_default_height :"50"
                 padding : "20dp"
-                pos_hint:{"center_x" : 0.5, "center_y" : 0.55}
+                pos_hint:{"center_x" : 0.5, "center_y" : 0.5}
                 size_hint_y:0.1
-                size_hint_x:0.8
+
                 MDLabel :
                     id : error_label_main
                     text : ""
@@ -359,22 +464,27 @@
                     text_color: "red"
                     font_size : self.width/20
                 MDRectangleFlatIconButton :
-                    pos_hint : {"x":0.45,"y":0.2}
+                    id : "practice_button"
+
                     text : "測定練習"
                     icon: "play"
                     size_hint_x:1.0
                     on_release :
                         root.data_calculation()
-                        root.practice()
+                        root.practice_flag()
+
+
 
                 MDRectangleFlatIconButton :
-                    pos_hint : {"x":0.45,"y":0.3}
+                    id : "test_button"
+
                     text : "スタート"
                     icon: "play"
                     size_hint_x:1.0
                     on_release :
                         root.data_calculation()
-                        root.test()
+                        root.test_flag()
+
 
 
 
@@ -767,12 +877,6 @@
             orientation: 'horizontal'
 <LoadingWindow>:
     name : "loading"
-
-
-
-
-
-
     MDFloatLayout:
         md_bg_color : 0,0,0,0
         MDGridLayout:
@@ -826,6 +930,9 @@
             root.disable_load_button()
             root.switch()
 
+    MDTopAppBar:
+        left_action_items: [['home', lambda x: root.popup_parent()]]
+
 
 <ConnectionWindow>
 
@@ -839,18 +946,12 @@
         font_size : self.width/25
     MDRectangleFlatButton :
         id : connect_return
-        text : "Return"
-        pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
+        text : "戻る"
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         disabled : False
         on_release :
             root.top()
-    MDRectangleFlatButton :
-        id : recon_button
-        text : "Proceed"
-        pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
-        disabled : False
-        on_release :
-            root.reconnect()
+
 
 <MaintenanceWindow>
     name : "maintenance"
@@ -917,7 +1018,9 @@
 
                 disabled : True
                 on_release:
+
                     root.test_1()
+
 
 
 
