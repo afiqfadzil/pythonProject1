@@ -1,13 +1,18 @@
 <WindowManager>:
     AddressScreen:
+    MaintenanceWindow:
+    PracticeWindow:
+    TestWindow:
+    TitleWindow:
+
     MainWindow:
 
 
-    PracticeWindow:
+
     ResultWindow:
-    MaintenanceWindow:
-    TestWindow:
-    TitleWindow:
+
+
+
     ConnectionWindow:
     LoadingWindow:
     ExplanationWindow:
@@ -156,7 +161,36 @@
             halign : "center"
             on_release : root.dismiss()
 
+<ShutdownPopup>
+    auto_dismiss : False
+    size_hint : 0.5, 0.15
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
 
+
+    title : "注意：シャットダウン良いですか"
+    title_text_color: "red"
+    font_name: "meiryo.ttc"
+    separator_color :  242/255 ,140/255,40/255,1
+    title_align : "center"
+    MDGridLayout:
+        rows:1
+        cols: 3
+        padding : "20dp"
+        MDRectangleFlatButton:
+            text : "はい"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release :
+                root.dismiss()
+                root.btn()
+        Widget:
+        MDRectangleFlatButton:
+            text : "いいえ"
+            font_size: " 12sp"
+            size_hint : 1 , 0.5
+            halign : "center"
+            on_release : root.dismiss()
 <PracticePopup>
     auto_dismiss : False
     size_hint : 0.5, 0.15
@@ -215,18 +249,12 @@
 
 
 
-    Overlay:
-        id: dim_overlay
-        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
-        on_touch_down: root.ids.nav_drawer.set_state("closed")
+
 
     MDTopAppBar:
         font_size : "20sp"
-        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
-    MDNavigationDrawer:
-        id: nav_drawer
-        BoxLayout:
-            orientation: 'horizontal'
+        left_action_items: [['home', lambda x: root.home()]]
+
 
 <AddressScreen>
 
@@ -470,8 +498,9 @@
                     icon: "play"
                     size_hint_x:1.0
                     on_release :
-                        root.data_calculation()
                         root.practice_flag()
+                        root.data_calculation()
+
 
 
 
@@ -482,8 +511,9 @@
                     icon: "play"
                     size_hint_x:1.0
                     on_release :
-                        root.data_calculation()
                         root.test_flag()
+                        root.data_calculation()
+
 
 
 
@@ -551,18 +581,12 @@
         pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
         on_release:
             root.retry()
-    Overlay:
-        id: dim_overlay
-        opacity: 1 if root.ids.nav_drawer.state == "open" else 0
-        on_touch_down: root.ids.nav_drawer.set_state("closed")
+
 
     MDTopAppBar:
         font_size : "20sp"
-        left_action_items: [['menu', lambda x: nav_drawer.set_state("open")]]
-    MDNavigationDrawer:
-        id: nav_drawer
-        BoxLayout:
-            orientation: 'horizontal'
+        left_action_items: [['home', lambda x:root.home() ]]
+
 
 
 
@@ -863,9 +887,10 @@
 
 
     MDTopAppBar:
-
+        use_overflow: True
         left_action_items: [['cog', lambda x: root.start_maintenance()]]
-        right_action_items: [['information', lambda x: root.info()]]
+        right_action_items:[['power', lambda x: app.turn_off()],['information', lambda x: root.info()]]
+
 
     Overlay:
         id: dim_overlay
@@ -905,6 +930,7 @@
                 md_bg_color:rgba(242,80,34,255)
             MDFloatLayout:
                 md_bg_color:rgba(242,80,34,255)
+
 
 
 
@@ -966,25 +992,13 @@
             halign :"center"
             size_hint_x :1
 
-        MDRectangleFlatIconButton :
-            id : maintenance_button_start
-            icon:"play"
-            font_size : '18sp'
-            mode:"round"
-            size_hint :0.8 ,0.035
-            fill_color: "white"
-            text : "座面高さ校正開始"
-            pos_hint : {"center_x":0.5,"center_y" : 0.85}
 
-            halign :"center"
-            on_release:
-                root.enable_test()
         GridLayout:
             halign:"center"
             row_force_default :"True"
             row_default_height :"80"
 
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.70}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.75}
             rows: 2
             column:1
             size_hint_y:0.2
@@ -1006,7 +1020,7 @@
         GridLayout:
             rows:1
             column:1
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.60}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.65}
             size_hint_y : 0.05
             size_hint_x: 0.8
             MDRectangleFlatButton :
@@ -1016,7 +1030,7 @@
                 size_hint_y:0.2
                 text : "測定開始"
 
-                disabled : True
+                disabled : False
                 on_release:
 
                     root.test_1()
@@ -1029,7 +1043,7 @@
             row_force_default :"True"
             row_default_height :"80"
 
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.45}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.50}
             rows: 2
             column:1
             size_hint_y:0.2
@@ -1038,7 +1052,7 @@
 
             MDLabel :
 
-                text : "2)手動で座面高さを40㎝に合わせる"
+                text : "2)手動で座面高さを30㎝に合わせる"
                 rows:1
                 font_size : self.width/25
 
@@ -1051,7 +1065,7 @@
         GridLayout:
             rows:1
             column:1
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.35}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.40}
             size_hint_y : 0.05
             size_hint_x: 0.8
             MDRectangleFlatButton :
@@ -1070,30 +1084,55 @@
 
 
 
-        MDLabel :
-            font_size : "16sp"
-            text : "座面高さ校正結果:"
-            pos_hint : {"center_x" : 0.315 , "center_y" : 0.25}
-            size_hint_x :1
-            halign :"center"
+        GridLayout:
+            halign:"center"
+            row_force_default :"True"
+            row_default_height :"80"
 
-        MDLabel :
-            id : result
-            font_size : "16sp"
-            text : "A：＿＿\nB：＿＿"
-            pos_hint : {"center_x" : 0.53 , "center_y" : 0.24}
-            size_hint_x :1
-            halign :"center"
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.25}
+            rows: 2
+            column:1
+            size_hint_y:0.2
+            size_hint_x:0.8
+
+
+            MDLabel :
+
+                text : "2)手動で座面高さを50㎝に合わせる"
+                rows:1
+                font_size : self.width/25
+
+
+            MDLabel :
+                id : test3
+
+                text : "現在の座面高さ＿＿㎝"
+                font_size : self.width/25
 
 
         MDRectangleFlatButton :
-            id : maintenance_end
+            id : maintenance_button_3
             font_size : '18sp'
             size_hint_x: 0.8
             size_hint_y : 0.05
-            text : "測定終了"
+            text : "測定開始"
             pos_hint : {"center_x" : 0.5 , "center_y" : 0.15}
             disabled : True
+            on_release:
+                root.test_3()
+
+
+        MDRectangleFlatIconButton :
+            id : maintenance_end
+
+            font_size : '18sp'
+            mode:"round"
+            size_hint :0.5 ,0.035
+            fill_color: "white"
+            text : "終了"
+            pos_hint : {"center_x":0.5,"center_y" : 0.08}
+            disabled : True
+            halign :"center"
             on_release:
                 root.test_end()
         MDTopAppBar:

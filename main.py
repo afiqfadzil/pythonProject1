@@ -5,7 +5,9 @@ from kivy.factory import Factory
 import socket
 from kivy.animation import Animation
 from kivy.lang import Builder
+from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.dropdown import DropDown
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -19,6 +21,7 @@ from kivy.config import Config
 
 from time import sleep
 from kivy.core.text import LabelBase
+from kivymd.uix.boxlayout import MDBoxLayout
 
 LabelBase.register(DEFAULT_FONT, 'meiryo.ttc')  # 追加分
 
@@ -60,8 +63,10 @@ class ClientMain:
         self.response = 0
         self.a = 0
         self.b = 0
-        self.v2 = 0
-        self.v1 = 0
+        self.c = 0
+        self.d = 0
+
+
         self.response = None
         self.sock = None
 
@@ -90,11 +95,13 @@ class ClientMain:
         if self.sock is not None:
             try:
                 self.sock.send(msg.encode())
-            except Exception as e :
+            except Exception as e:
                 my_app.sm.current = "connect"
                 my_app.sm.transition.direction = "left"
         else:
             print("send_dataSocket is not initialized.")
+            my_app.sm.current = "connect"
+            my_app.sm.transition.direction = "left"
 
     def check_response(self):
 
@@ -122,10 +129,10 @@ class ClientMain:
         self.set_button_state('maintenance_button_2', False)
         try:
             self.send_data("ONETIMEREAD")
-            self.v1 = self.get_data()
-            self.v1 = (self.v1.decode('utf-8'))
-            print(self.v1)
-            maintenance.ids.test1.text = f'現在の座面高さ{self.v1}㎝'
+            self.t1 = self.get_data()
+            self.t1 = (self.t1.decode('utf-8'))
+            print(self.t1)
+            maintenance.ids.test1.text = f'現在の座面高さ{self.t1}㎝'
             sleep(0.5)
         except Exception as e:
             print(e)
@@ -136,31 +143,52 @@ class ClientMain:
     def test_2(self):
         maintenance = my_app.sm.get_screen('maintenance')
         self.set_button_state('maintenance_button_2', True)
-        self.set_button_state('maintenance_end', False)
+        self.set_button_state('maintenance_button_3', False)
         try:
 
             self.send_data("ONETIMEREAD")
-            self.v2 = self.get_data()
-            self.v2 = (self.v2.decode('utf-8'))
-            print(self.v1)
-            maintenance.ids.test2.text = f'現在の座面高さ{self.v2}㎝'
+            self.t2 = self.get_data()
+            self.t2 = (self.t2.decode('utf-8'))
+            print(self.t2)
+            maintenance.ids.test2.text = f'現在の座面高さ{self.t2}㎝'
             sleep(0.5)
         except Exception as e:
             print(e)
             my_app.sm.current = "connect"
             my_app.sm.transition.direction = "left"
             return 0
-        self.a = (40 - 10) / (float(self.v2) - float(self.v1))
-        self.b = (10 * float(self.v2) - 40 * float(self.v1)) / (float(self.v2) - float(self.v1))
+
+    def test_3(self):
+        maintenance = my_app.sm.get_screen('maintenance')
+        self.set_button_state('maintenance_button_3', True)
+        self.set_button_state('maintenance_end', False)
+        try:
+            self.send_data("ONETIMEREAD")
+            self.t3 = self.get_data()
+            self.t3 = (self.t3.decode('utf-8'))
+
+            maintenance.ids.test3.text = f'現在の座面高さ{self.t3}㎝'
+            sleep(0.5)
+        except Exception as e:
+            print(e)
+            my_app.sm.current = "connect"
+            my_app.sm.transition.direction = "left"
+            return 0
+        t1 = float(self.t1)
+        t2 = float(self.t2)
+        t3 = float(self.t3)
+        self.a = -(((t3-50)-(t2-30))/20)
+        self.b = ((t1-10)-(t2-30))/20
+        self.c = -(t2-30)
+        self.d = (t1-10)
+
         a = round(self.a, 1)
         b = round(self.b, 1)
+        c = round(self.c, 1)
+        d = round(self.d, 1)
+        data = [a, b, c, d]
 
-        print(self.a)
-        maintenance.ids.result.text = f'A：{a}\nB：{b}'
-        with open("calculation.txt", mode="w") as myfile:
-            myfile.writelines(f"{a},{b}")
-            print("A: ", a, "\nB: ", b, "\nADDED!")
-            myfile.close()
+        print(data)
 
 
 client_main = ClientMain()
@@ -203,10 +231,46 @@ class TitleWindow(Screen):  # connection to server may start here
         self.manager.transition.direction = "left"
 
 
-# Popup Window section
-class MovingPopup(Popup): #Popup when the seat is moving in loading screen
+########################################################################################################################
+class CustomDropDown(DropDown):
     pass
-class CautionPopup(Popup): # Popup when leaving loading test
+
+
+# Popup Window section
+class ShutdownPopup(Popup):
+    def btn(self):
+        try:
+            client_main.send_data("SHUTDOWN")
+            sys.exit()
+        except Exception as e:
+            app = MyMainApp.get_running_app()
+            app.root.current = "connect"
+            app.root.transition.direction = "right"
+
+    pass
+
+
+class DisconnectPopup(Popup):
+    def btn(self):
+        try:
+            client_main.send_data("DISCONNECT")
+        except Exception as e:
+            app = MyMainApp.get_running_app()
+            app.root.current = "connect"
+            app.root.transition.direction = "right"
+
+    pass
+
+
+class ConfirmPopup(Popup):
+    pass
+
+
+class MovingPopup(Popup):  # Popup when the seat is moving in loading screen
+    pass
+
+
+class CautionPopup(Popup):  # Popup when leaving loading test
     def btn(self):
         loading = my_app.sm.get_screen("loading")
         loading.ids.load_button.disabled = True
@@ -307,9 +371,11 @@ class MainWindow(Screen):
                 main_screen.ids.error_label_main.text = ""
 
         try:
+
             client_main.send_data("START")
-            self.manager.current = "loading"
-            self.manager.transition.direction = "left"
+            my_app.sm.current = "loading"
+            my_app.sm.transition.direction = "left"
+
             sleep(0.5)
         except Exception as e:
             self.manager.current = "connect"
@@ -355,8 +421,7 @@ class MainWindow(Screen):
         MainWindow.load_flag = 0
         try:
             client_main.send_data(str(self.seat))
-            self.manager.current = "loading"
-            self.manager.transition.direction = "left"
+
 
         except Exception as e:
             print(str(e))
@@ -413,6 +478,10 @@ class MainWindow(Screen):
 
 
 class PracticeWindow(Screen):
+
+    def home(self):
+        Factory.CautionPopup().open()
+
     pass
 
 
@@ -610,6 +679,9 @@ class TestWindow(Screen):
         else:
             pass
 
+    def home(self):
+        Factory.CautionPopup().open()
+
 
 class LoadingWindow(Screen):  # incomplete
     # disable the button until the chair had been set up (+OK signal from raspberry pi)
@@ -621,11 +693,12 @@ class LoadingWindow(Screen):  # incomplete
 
         self.response = 0
         self.tmp = 0
+
     def popup_parent(self):
         loading = self.manager.get_screen("loading")
         if loading.ids.load_button.disabled:
             Factory.MovingPopup().open()
-        else :
+        else:
             Factory.CautionPopup().open()
 
     def on_enter(self):
@@ -677,10 +750,6 @@ class MaintenanceWindow(Screen):
         maintenance = self.manager.get_screen('maintenance')
         maintenance.ids[button_name].disabled = state
 
-    def enable_test(self):
-        self.set_button_state('maintenance_button_1', False)
-        self.set_button_state('maintenance_button_start', True)
-
     def back(self):
         self.manager.current = "title"
         self.manager.transition.direction = "left"
@@ -694,14 +763,6 @@ class MaintenanceWindow(Screen):
         if self.thread_1.is_alive():
             self.interval = Clock.schedule_interval(self.dismiss_1, 1.0)
 
-    def dismiss_1(self, dt):
-        if not self.thread_1.is_alive():
-            self.popup.dismiss()
-
-    def dismiss_2(self, dt):
-        if not self.thread_2.is_alive():
-            self.popup.dismiss()
-
     def test_2(self):
         Clock.unschedule(self.interval)
         self.popup.open()
@@ -710,17 +771,33 @@ class MaintenanceWindow(Screen):
         if self.thread_2.is_alive():
             self.interval = Clock.schedule_interval(self.dismiss_2, 1.0)
 
+    def test_3(self):
+        Clock.unschedule(self.interval)
+        self.popup.open()
+        self.thread_3 = Thread(target=client_main.test_3)
+        self.thread_3.start()
+        if self.thread_3.is_alive():
+            self.interval = Clock.schedule_interval(self.dismiss_3, 1.0)
+
+    def dismiss_1(self, dt):
+        if not self.thread_1.is_alive():
+            self.popup.dismiss()
+
+    def dismiss_2(self, dt):
+        if not self.thread_2.is_alive():
+            self.popup.dismiss()
+
+    def dismiss_3(self, dt):
+        if not self.thread_3.is_alive():
+            self.popup.dismiss()
+
     def test_end(self):
         client_main.send_data("EXIT")
-        self.set_button_state('maintenance_button_start', False)
+        self.set_button_state('maintenance_button_1', False)
         self.set_button_state('maintenance_end', True)
         self.manager.current = "title"
         self.manager.transition.direction = "left"
         print(client_main.get_data())
-        maintenance = self.manager.get_screen('maintenance')
-        maintenance.ids.test1.text = f'現在の座面高さ＿＿㎝'
-        maintenance.ids.test2.text = f'現在の座面高さ＿＿㎝'
-        maintenance.ids.result.text = f'A：＿＿\nB：＿＿'
         pass
 
     pass
@@ -768,6 +845,9 @@ class NavDrawer(BoxLayout):
 
 
 class MyMainApp(MDApp):
+    def turn_off(self):
+        Factory.ShutdownPopup().open()
+        pass
 
     def build(self):
         global my_app
