@@ -18,10 +18,11 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase, DEFAULT_FONT  # 追加分
 from kivy.resources import resource_add_path  # 追加分
 from kivy.config import Config
-
+import pickle
 from time import sleep
 from kivy.core.text import LabelBase
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
 
 LabelBase.register(DEFAULT_FONT, 'meiryo.ttc')  # 追加分
 
@@ -65,7 +66,7 @@ class ClientMain:
         self.b = 0
         self.c = 0
         self.d = 0
-
+        self.stop_sign = 1
 
         self.response = None
         self.sock = None
@@ -94,7 +95,11 @@ class ClientMain:
     def send_data(self, msg):
         if self.sock is not None:
             try:
-                self.sock.send(msg.encode())
+                if type(msg) == list:
+                    data = pickle.dumps(msg)
+                    self.sock.send(data)
+                else:
+                    self.sock.send(msg.encode())
             except Exception as e:
                 my_app.sm.current = "connect"
                 my_app.sm.transition.direction = "left"
@@ -114,6 +119,14 @@ class ClientMain:
                 load_screen.ids.load_button.disabled = False
 
                 break  # Exit the loop when we receive the expected data
+            elif data.decode('utf-8') == "EXIT":
+                self.stop_sign = 0
+
+                break
+
+
+
+
             else:
                 print("Wrong Data")
                 print(f'Response: {self.response}')
@@ -177,16 +190,18 @@ class ClientMain:
         t1 = float(self.t1)
         t2 = float(self.t2)
         t3 = float(self.t3)
-        self.a = -(((t3-50)-(t2-30))/20)
-        self.b = ((t1-10)-(t2-30))/20
-        self.c = -(t2-30)
-        self.d = (t1-10)
+        self.a = -(((t3 - 50) - (t2 - 30)) / 20)
+        self.b = ((t1 - 10) - (t2 - 30)) / 20
+        self.c = -(t2 - 30)
+        self.d = -(t2 - 30) - (float(self.b) * 30)
 
-        a = round(self.a, 1)
-        b = round(self.b, 1)
-        c = round(self.c, 1)
-        d = round(self.d, 1)
+        a = round(self.a, 3)
+        b = round(self.b, 3)
+        c = round(self.c, 3)
+        d = round(self.d, 3)
         data = [a, b, c, d]
+        client_main.send_data("MTVAL")
+        client_main.send_data(data)
 
         print(data)
 
@@ -262,6 +277,16 @@ class DisconnectPopup(Popup):
     pass
 
 
+class ErrorPopup(Popup):
+    def btn(self):
+        TestWindow.c = 0
+        app = MyMainApp.get_running_app()
+        app.root.current = "main"
+        app.root.transition.direction = "right"
+
+    pass
+
+
 class ConfirmPopup(Popup):
     pass
 
@@ -300,10 +325,21 @@ class LoadingPopup(Popup):
         app.root.transition.direction = "right"
 
 
-class WindowManager(ScreenManager):
+class MD3Card(MDCard):
     pass
 
 
+###############################################################################################################
+class WindowManager(ScreenManager):
+    pass
+
+class GraphWindow(Screen):
+    pass
+
+class QRCodeWindow(Screen):
+    pass
+class FeedbackWindow(Screen):
+    pass
 class MainWindow(Screen):
 
     def __init__(self, **kwargs):
@@ -559,7 +595,7 @@ class TestWindow(Screen):
     def retry(self):
 
         self.manager.get_screen(
-            "test").ids.test2_label.text = 'もう一度せき着席して、もう一度試してください'
+            "test").ids.test2_label.text = 'もう一度着席して、もう一度試してください'
 
         pass
 
@@ -693,6 +729,8 @@ class LoadingWindow(Screen):  # incomplete
 
         self.response = 0
         self.tmp = 0
+        self.load = None
+        self.stop_loading = 0
 
     def popup_parent(self):
         loading = self.manager.get_screen("loading")
@@ -701,19 +739,38 @@ class LoadingWindow(Screen):  # incomplete
         else:
             Factory.CautionPopup().open()
 
+    def stop_signal(self, dt):  # If dead, stop program return to menu
+        if client_main.stop_sign == 1:
+            pass
+        else:
+            Factory.ErrorPopup().open()
+
+            client_main.stop_sign = 1
+            pass
+
+    def on_leave(self):
+        self.stop_loading = 1
+        sleep(0.5)
+        self.stop_loading = 0
+
     def on_enter(self):
-        loading = Thread(target=self.loading)
-        loading.start()
+        self.load = Thread(target=self.loading)
+        self.load.start()
         check = Thread(target=client_main.check_response)
         check.start()
+        Clock.schedule_interval(self.stop_signal, 1.0)
 
     def loading(self, *kwargs):
-        loading_grid = self.ids.loading
-        anim = Animation(height=120, width=120, spacing=[10, 10], duration=0.5)
-        anim += Animation(height=90, width=90, spacing=[10, 10], duration=0.5)
-        anim += Animation(angle=loading_grid.angle + 45, duration=0.5)
-        anim.bind(on_complete=self.loading)
-        anim.start(loading_grid)
+        if self.stop_loading == 1:
+            return 0
+        else:
+            loading_grid = self.ids.loading
+            anim = Animation(height=120, width=120, spacing=[10, 10], duration=0.5)
+            anim += Animation(height=90, width=90, spacing=[10, 10], duration=0.5)
+            anim += Animation(angle=loading_grid.angle + 45, duration=0.5)
+            anim.bind(on_complete=self.loading)
+            anim.start(loading_grid)
+
 
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")
@@ -853,10 +910,10 @@ class MyMainApp(MDApp):
         global my_app
 
         my_app = self
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Orange"
-        self.theme_cls.primary_hue = "800"
-        self.theme_cls.secondary_palette = "Grey"
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "LightBlue"
+        self.theme_cls.primary_hue = "300"
+        self.theme_cls.secondary_palette = "White"
         self.sm = WindowManager()
         self.client = ClientMain()
         return self.sm

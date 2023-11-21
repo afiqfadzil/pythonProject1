@@ -1,25 +1,23 @@
 <WindowManager>:
     AddressScreen:
-    MaintenanceWindow:
-    PracticeWindow:
-    TestWindow:
-    TitleWindow:
-
-    MainWindow:
-
-
-
     ResultWindow:
+    TestWindow:
 
-
-
-    ConnectionWindow:
     LoadingWindow:
     ExplanationWindow:
+    MaintenanceWindow:
+    PracticeWindow:
+    TitleWindow:
+    MainWindow:
+
+    ConnectionWindow:
 
 
 
 
+
+<MDCard>:
+    md_bg_color: "#141666"
 <MDLabel> :
     color: 1, 1, 1, 1
     font_name: "meiryo.ttc"
@@ -30,7 +28,8 @@
     title_size : "20sp"
     title_font_name :"meiryo.ttc"
     size_hint: (1, 0.1)
-    elevation: 10
+    md_bg_color: "#6677CC"
+
     pos_hint : {"center_x" : 0.5 , "center_y" : 0.975}
 <MDNavigationDrawer>:
     BoxLayout:
@@ -50,7 +49,7 @@
     font_name: "meiryo.ttc"
     color: 1, 1, 1, 1
     font_name: "meiryo.ttc"
-    font_size : '20sp'
+    font_size : '20dp'
 
 
 
@@ -66,6 +65,11 @@
     font_name: "meiryo.ttc"
     font_name_helper_text : "meiryo.ttc"
     helper_text_mode : "on_focus"
+    mode : "fill"
+    fill_color: "#DADAE6"
+
+
+
 
 
 <canvas.before>
@@ -88,33 +92,63 @@
 <MDRectangleFlatButton>:
     size_hint : 0.1,0.035
     ripple_behaviour :True
+    md_bg_color : "#DADAE6"
+    text_color : "#000000"
 
-    md_bg_color : 1,1,1,1
+
     font_size :'18sp'
 <MDRectangleFlatIconButton>:
     size_hint : 0.1,0.035
     ripple_behaviour :True
-    md_bg_color : 1,1,1,1
+    md_bg_color :"#DADAE6"
     font_size :'18sp'
 
 
 #Popup Section
 #:import Factory kivy.factory.Factory
+<ErrorPopup>
+    auto_dismiss : False
+    size_hint : 0.5, 0.25
+    pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    title : "エラー"
+    font_name: "meiryo.ttc"
+    separator_color :  "#1c1c2c"
+    md_bg_color : "#baacd4"
+    title_align : "center"
+    MDGridLayout
+        rows :2
+        cols : 1
+        MDLabel:
+            text : "エラーが発生しました、メイン画面に戻ります。"
+            font_size : self.height/7
+            halign : "center"
+        MDRectangleFlatButton:
+            text : "閉じる"
+            size_hint_x : 1
+            halign : "center"
+            on_release :
+                root.btn()
+                root.dismiss()
+
+
 <LoadingPopup>
     auto_dismiss : False
     size_hint : 0.5, 0.15
     pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
     title : "測定中、少々お待ちください"
     font_name: "meiryo.ttc"
-    separator_color :  242/255 ,140/255,40/255,1
+    separator_color :  "#1c1c2c"
+    md_bg_color : "#baacd4"
     title_align : "center"
 <MovingPopup>
     auto_dismiss : False
     size_hint : 0.5 , 0.25
     pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
+    background_color :  "#503c80"
     title : "注意"
     font_name: "meiryo.ttc"
-    separator_color :  242/255 ,140/255,40/255,1
+    md_bg_color : "#baacd4"
+
     title_align : "center"
     MDGridLayout:
         row_default_height :"50"
@@ -123,7 +157,7 @@
 
         MDLabel :
             text : "椅子が動いてますので少々お待ちください。"
-            font_size : self.height/7
+            font_size : "20dp"
             halign : "center"
 
         MDRectangleFlatButton:
@@ -139,7 +173,7 @@
     pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
     title : "テスト終了しますか？"
     font_name: "meiryo.ttc"
-    separator_color :  242/255 ,140/255,40/255,1
+    separator_color :  "#1c1c2c"
     title_align : "center"
     MDGridLayout:
         rows:1
@@ -147,7 +181,7 @@
         padding : "20dp"
         MDRectangleFlatButton:
             text : "はい"
-            font_size: " 12sp"
+            font_size : "12dp"
             size_hint : 1 , 0.5
             halign : "center"
             on_release :
@@ -156,7 +190,7 @@
         Widget:
         MDRectangleFlatButton:
             text : "いいえ"
-            font_size: " 12sp"
+            font_size: " 12dp"
             size_hint : 1 , 0.5
             halign : "center"
             on_release : root.dismiss()
@@ -170,7 +204,8 @@
     title : "注意：シャットダウン良いですか"
     title_text_color: "red"
     font_name: "meiryo.ttc"
-    separator_color :  242/255 ,140/255,40/255,1
+    font_size : "20dp"
+    separator_color :  "#1c1c2c"
     title_align : "center"
     MDGridLayout:
         rows:1
@@ -178,7 +213,7 @@
         padding : "20dp"
         MDRectangleFlatButton:
             text : "はい"
-            font_size: " 12sp"
+            font_size: " 12dp"
             size_hint : 1 , 0.5
             halign : "center"
             on_release :
@@ -187,7 +222,7 @@
         Widget:
         MDRectangleFlatButton:
             text : "いいえ"
-            font_size: " 12sp"
+            font_size: " 12dp"
             size_hint : 1 , 0.5
             halign : "center"
             on_release : root.dismiss()
@@ -197,7 +232,7 @@
     pos_hint: {"center_x" : 0.5 , "center_y": 0.5}
     title : "練習終了しますか？"
     font_name: "meiryo.ttc"
-    separator_color :  242/255 ,140/255,40/255,1
+    separator_color :  "#1c1c2c"
     title_align : "center"
     MDGridLayout:
         rows:1
@@ -305,10 +340,12 @@
                 size_hint_x:1
                 halign :"left"
                 text : "接続ガイドライン。"
+                color : "#000000"
                 underline :True
             MDLabel :
                 font_size : self.width/28
                 size_hint_x:1
+                color : "#000000"
                 halign :"left"
                 text : "1.Wifi設定を開いて「Raspi」と接続してください. パスワード：raspberrypi"
             MDLabel :
@@ -331,7 +368,9 @@
 
         MDRectangleFlatButton:
             pos_hint : {"center_x":0.5,"center_y":0.15}
-            text : "Start"
+            color : "#000000"
+            font_size : "24dp"
+            text : "スタート"
             halign:"center"
             size_hint_x: 0.7
             on_release :
@@ -367,6 +406,8 @@
             padding: "20dp"
             style:"elevated"
             adaptive_size: True
+            color_mode : "#A4A4A4"
+
             GridLayout:
                 halign:"center"
 
@@ -394,11 +435,13 @@
                     text: "65"
                     multiline : False
                     hint_text:"必須"
+                    mode :"round"
                     helper_text: "16~95歳"
                     required: True
                     font_name : "meiryo.ttc"
                     size_hint_x:1.0
-                    mode :"rectangle"
+
+
 
                 Widget:
                     size_hint_x:1.0
@@ -417,9 +460,10 @@
                 MDTextField :
                     id : ht
                     multiline : False
-                    mode :"rectangle"
+                    mode :"round"
                     hint_text:"必須"
                     helper_text : "Max 2.00m"
+                    helper_text_color:1,1,1,1
                     text:"175"
                     size_hint_x:1.0
                     required: True
@@ -451,6 +495,7 @@
                     id: male_gender
                     group: "gender"
                     active: False
+                    color:"#000000"
 
                     size_hint : 0.30,0.04
                 MDLabel:
@@ -463,6 +508,7 @@
                     group: "gender"
                     active: False
                     size_hint : 0.30,0.040
+                    color:"#000000"
                 MDLabel:
                     text:"他の"
                     halign:"right"
@@ -473,6 +519,7 @@
                     group: "gender"
                     active: False
                     size_hint : 0.30,0.035
+                    color:"#000000"
             GridLayout
                 rows:3
                 column:1
@@ -546,7 +593,8 @@
         halign: "center"
         size_hint_x :1
         text :"Under Construction"
-        font_size : self.width/40
+        font_size : "26dp"
+        color : "#000000"
 
     Image :
         id : test_image
@@ -556,7 +604,8 @@
         size_hint_y  : 0.3
     MDRectangleFlatButton:
         text : "成功"
-        pos_hint : {"center_x" : 0.25 , "center_y" : 0.25}
+        font_size : "20dp"
+        pos_hint : {"center_x" : 0.25 , "center_y" : 0.20}
         on_release :
             root.passed()
             root.rating_func()
@@ -568,7 +617,8 @@
 
     MDRectangleFlatButton :
         text : "失敗"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.20}
+        font_size : "20dp"
         on_release :
             root.failed()
             root.rating_func()
@@ -578,13 +628,14 @@
 
     MDRectangleFlatButton :
         text : "やり直し"
-        pos_hint : {"center_x" : 0.75 , "center_y" : 0.25}
+        font_size : "20dp"
+        pos_hint : {"center_x" : 0.75 , "center_y" : 0.20}
         on_release:
             root.retry()
 
 
     MDTopAppBar:
-        font_size : "20sp"
+        font_size : "20dp"
         left_action_items: [['home', lambda x:root.home() ]]
 
 
@@ -611,15 +662,14 @@
             column:1
             rows:1
             MDCard:
-                fill_color: "red"
+
                 orientation: "horizontal"
                 padding:"20dp"
                 MDLabel:
                     halign:"center"
                     text:"測定終了しました！ "
-                    font_size:"24sp"
-                    theme_text_color: "Custom"
-                    text_color: "orange"
+                    font_size:"24dp"
+
 
 
         MDGridLayout:
@@ -635,7 +685,7 @@
             column:1
             rows : 1
             MDCard:
-                fill_color: "red"
+
                 orientation: "horizontal"
                 padding:"20dp"
                 GridLayout:
@@ -726,6 +776,7 @@
             halign:"center"
             size_hint_x : 0.2
             size_hint_y  : 0.3
+            color : "#000000"
             font_size:self.width/5
             markup: True
             on_ref_press:
@@ -741,6 +792,7 @@
             font_size:self.width/5
             size_hint_x : 0.2
             size_hint_y  : 0.3
+            color : "#000000"
             markup: True
             on_ref_press:
                 import webbrowser
@@ -757,6 +809,7 @@
             font_size:self.width/8
             size_hint_x : 0.2
             size_hint_y  : 0.3
+            color : "#000000"
             markup: True
             on_ref_press:
                 import webbrowser
@@ -771,6 +824,7 @@
             halign:"center"
             size_hint_x : 0.2
             size_hint_y  : 0.3
+            color : "#000000"
             font_size:self.width/5
             markup: True
             on_ref_press:
@@ -787,7 +841,8 @@
 
     MDRectangleFlatButton :
         text : "測定終了"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.10}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.05}
+        font_size : "24dp"
         on_release :
             app.root.current = "main"
             root.manager.transition.direction = "up"
@@ -811,7 +866,8 @@
         MDLabel :
             id:title_label
             text : "ロコモ年齢自動測定システムの利用について"
-            font_size : self.width/20
+            font_size : "28dp"
+            color :"black"
             size_hint_x : 0.8
             halign : "center"
             underline : True
@@ -822,21 +878,19 @@
 
 
 
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.75}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.45}
 
 
-            size_hint_y:0.8
-            size_hint_x:0.8
+            size_hint_y:0.7
+            size_hint_x:0.9
             column:1
             rows:3
 
-            Widget:
-                size_hint_y:0.8
-                size_hint_x: None
+
 
             MDCard:
                 orientation: 'vertical'
-                pos_hint:{"center_x" : 0.5 , "center_y" : 1.0}
+
                 size_hint_y : 1.0
                 padding: "10dp"
                 style:"elevated"
@@ -850,21 +904,21 @@
 
                 MDLabel :
                     text : "\u2022　測定結果とコメントについてこのロコモ年年齢測定システムは立ち上がり能力からあなたの基礎移動能力の現状と年齢に伴う衰退の傾向の予測を行います. "
-                    font_size : self.width/28
+                    font_size : self.width/25
                     halign :"left"
                 MDLabel :
                     text : "\u2022　測定結果には個人によって誤差があり，その評価やコメントは今後の基礎能力維持のための参考としてご認識いただけますようお願いします.\n  "
 
-                    font_size : self.width/28
+                    font_size : self.width/25
                     halign :"left"
                 MDLabel :
                     text : " \u2022　測定中の事故について本測定システムは安全性の面において，できる限りの工夫を行い，市販の電動症候椅子の安全基準を持しておりますが，被測者の基礎運動機能の低下や無理な立上がり等による転倒の恐れがあります．\n"
-                    font_size : self.width/28
+                    font_size : self.width/25
 
                     halign :"left"
                 MDLabel :
                     text : "\u2022　万が一，転倒による怪我が生じた場合，研究開発側は一切の責任を負いかねますのであらかじめご了承ください. "
-                    font_size : self.width/28
+                    font_size : self.width/25
 
                     halign :"left"
 
@@ -874,8 +928,9 @@
 
         MDRectangleFlatButton :
             text : "承知しました"
-            pos_hint : {"center_x" : 0.5 , "center_y" : 0.20}
+            pos_hint : {"center_x" : 0.5 , "center_y" : 0.05}
             size_hint : 0.3,0.05
+            font_size :"24dp"
             ripple_behaviour :True
 
             on_release :
@@ -923,13 +978,13 @@
             canvas.after:
                 PopMatrix
             MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
+                md_bg_color:"#baacd4"
             MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
+                md_bg_color:"#1c1c2c"
             MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
+                md_bg_color:"#1c1c2c"
             MDFloatLayout:
-                md_bg_color:rgba(242,80,34,255)
+                md_bg_color:"#baacd4"
 
 
 
@@ -937,11 +992,12 @@
 
     MDLabel :
         id:loading_label
-        text : "座面高さ調整中.\n座ったまままで待ってください."
+        text : "座面高さ調整中.\n座ったままお待ちください."
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.4}
         halign :"center"
         size_hint_x :1
-        font_size : "25sp"
+        color :"#000000"
+        font_size : "30dp"
 
 
 
@@ -969,6 +1025,7 @@
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.5}
         halign : "center"
         size_hint_x : 0.8
+        color : "#000000"
         font_size : self.width/25
     MDRectangleFlatButton :
         id : connect_return
@@ -987,6 +1044,7 @@
             id: maintenance_title
             font_size : self.width/18
             text : "メンテナンス画面"
+            color: "#000000"
             underline : True
             pos_hint : {"center_x": 0.5,"center_y": 0.9}
             halign :"center"
@@ -1008,13 +1066,14 @@
             MDLabel :
 
                 text : "1)手動で座面高さを10㎝に合わせる"
+                color: "#000000"
                 rows:1
                 font_size : self.width/25
 
 
             MDLabel :
                 id : test1
-
+                color: "#000000"
                 text : "現在の座面高さ＿＿㎝"
                 font_size : self.width/25
         GridLayout:
@@ -1053,13 +1112,14 @@
             MDLabel :
 
                 text : "2)手動で座面高さを30㎝に合わせる"
+                color: "#000000"
                 rows:1
                 font_size : self.width/25
 
 
             MDLabel :
                 id : test2
-
+                color: "#000000"
                 text : "現在の座面高さ＿＿㎝"
                 font_size : self.width/25
         GridLayout:
@@ -1099,12 +1159,14 @@
             MDLabel :
 
                 text : "2)手動で座面高さを50㎝に合わせる"
+                color: "#000000"
                 rows:1
                 font_size : self.width/25
 
 
             MDLabel :
                 id : test3
+                color: "#000000"
 
                 text : "現在の座面高さ＿＿㎝"
                 font_size : self.width/25
@@ -1146,21 +1208,22 @@
         MDLabel :
             id:title_label
             text : "測定姿勢と立上がり動作の説明"
-            font_size : '24sp'
+            font_size : '30dp'
             underline : True
             pos_hint : {"center_x" : 0.5 , "center_y" : 0.9}
             size_hint_x : 1
             halign :"center"
+            color:"#000000"
         MDGridLayout:
             halign:"center"
 
 
 
-            pos_hint:{"center_x" : 0.5 , "center_y" : 0.5}
+            pos_hint:{"center_x" : 0.5 , "center_y" : 0.47}
 
 
-            size_hint_y:0.65
-            size_hint_x:0.8
+            size_hint_y:0.78
+            size_hint_x:0.90
             column:1
             rows:1
 
@@ -1168,30 +1231,30 @@
 
             MDCard:
                 orientation: 'vertical'
-                pos_hint:{"center_x" : 0.5 , "center_y" : 1.0}
-                size_hint_y : 1.0
+
+
                 padding: "20dp"
                 style:"elevated"
                 adaptive_style: True
 
 
                 MDLabel :
-                    text : "\u2022上がり姿勢： \n立上がりは右の絵のような姿勢で，背中を背もたれに当てて，両手を胸の前に組み，両足または片足で行います．片足の場合は右足と左足のどちらでも良いです.踵は立ち上がりしやすいように，後ろに引いて置いてください．脛と地面の角度は約70°となります\n    "
-                    font_size : self.width/28
+                    text : "\u2022上がり姿勢： \n立上がりは右の絵のような姿勢で，背中を背もたれに当てて，両手を胸の前に組み，両足または片足で行います．片足の場合は右足と左足のどちらでも良いです.踵は立ち上がりしやすいように，後ろに引いて置いてください．脛と地面の角度は約70°となります"
+                    font_size : self.width/25
                     halign :"left"
                 MDLabel :
-                    text : "\u2022立上がり動作： \n無理なく，ゆっくり立上がり，そのままを３秒程度維持してください．その後椅子に座り，結果を選んでください "
-                    font_size : self.width/28
+                    text : "\u2022立上がり動作： \n無理なく，ゆっくり立上がり，そのままを３秒程度維持してください．その後椅子に座り，結果を選んでください"
+                    font_size : self.width/25
 
                     halign :"left"
                 MDLabel :
-                    text : "\u2022立上がり結果： \n 立ち上がりの結果はご自分で判断し，画面の「成功」または「失敗」のボターンをクリックしてください． 「やり直し」をクリックした場合，１回の直しはできます．\n"
-                    font_size : self.width/28
+                    text : "\u2022立上がり結果： \n 立ち上がりの結果はご自分で判断し，画面の「成功」または「失敗」のボターンをクリックしてください． 「やり直し」をクリックした場合，１回の直しはできます．"
+                    font_size : self.width/25
 
                     halign :"left"
                 MDLabel :
-                    text : "\u2022座面高さ調整： \n座面高さは測定結果に応じて自動調整します．座ったままで画面に指示に従ってください． "
-                    font_size : self.width/28
+                    text : "\u2022座面高さ調整： \n座面高さは測定結果に応じて自動調整します．座ったままで画面に指示に従ってください．"
+                    font_size : self.width/25
 
                     halign :"left"
     MDTopAppBar:
@@ -1203,7 +1266,7 @@
 
     MDRectangleFlatButton :
         text : "承知しました。測定開始"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.1}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.05}
         size_hint : 0.3,0.05
 
         on_release :
