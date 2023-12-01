@@ -190,7 +190,7 @@ class ClientMain:
         t1 = float(self.t1)
         t2 = float(self.t2)
         t3 = float(self.t3)
-        self.a = -(((t3 - 50) - (t2 - 30)) / 20)
+        self.a = -((t3 - 50) - (t2 - 30)) / 20
         self.b = ((t1 - 10) - (t2 - 30)) / 20
         self.c = -(t2 - 30)
         self.d = -(t2 - 30) - (float(self.b) * 30)
