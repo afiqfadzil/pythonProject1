@@ -251,6 +251,14 @@ class CustomDropDown(DropDown):
     pass
 
 
+class ContentNavigationDrawer(BoxLayout):
+    pass
+
+
+class ItemDrawer:
+    icon = StringProperty()
+
+
 # Popup Window section
 class ShutdownPopup(Popup):
     def btn(self):
@@ -333,13 +341,19 @@ class MD3Card(MDCard):
 class WindowManager(ScreenManager):
     pass
 
+
 class GraphWindow(Screen):
     pass
 
+
 class QRCodeWindow(Screen):
     pass
+
+
 class FeedbackWindow(Screen):
     pass
+
+
 class MainWindow(Screen):
 
     def __init__(self, **kwargs):
@@ -763,19 +777,23 @@ class LoadingWindow(Screen):  # incomplete
     def loading(self, *kwargs):
         if self.stop_loading == 1:
             return 0
+        if not self.manager.current == "loading":
+            return 0
         else:
             loading_grid = self.ids.loading
-            anim = Animation(height=120, width=120, spacing=[10, 10], duration=0.5)
-            anim += Animation(height=90, width=90, spacing=[10, 10], duration=0.5)
+            anim = Animation(height=200, width=200, spacing=[20, 20], duration=0.5)
+            anim += Animation(height=150, width=150, spacing=[20, 20], duration=0.5)
             anim += Animation(angle=loading_grid.angle + 45, duration=0.5)
             anim.bind(on_complete=self.loading)
             anim.start(loading_grid)
-
 
     def disable_load_button(self):
         load_screen = self.manager.get_screen("loading")
 
         load_screen.ids.load_button.disabled = True
+
+    def kill_load(self):
+        self.load.terminate()
 
     def home(self):
         self.manager.current = "main"
@@ -911,7 +929,7 @@ class MyMainApp(MDApp):
 
         my_app = self
         self.theme_cls.theme_style = "Light"
-        self.theme_cls.primary_palette = "LightBlue"
+        self.theme_cls.primary_palette = "Purple"
         self.theme_cls.primary_hue = "300"
         self.theme_cls.secondary_palette = "White"
         self.sm = WindowManager()
