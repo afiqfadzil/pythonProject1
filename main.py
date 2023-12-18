@@ -67,6 +67,7 @@ class ClientMain:
         self.c = 0
         self.d = 0
         self.stop_sign = 1
+        self.error_flag = 0
 
         self.response = None
         self.sock = None
@@ -116,11 +117,12 @@ class ClientMain:
             data = self.response
             if data.decode('utf-8') == "OK":
                 print(self.response)
-                load_screen.ids.load_button.disabled = False
 
+                # my_app.sm.current = "test"
                 break  # Exit the loop when we receive the expected data
             elif data.decode('utf-8') == "EXIT":
-                self.stop_sign = 0
+                # self.stop_sign = 0
+                self.error_flag = 1
 
                 break
 
@@ -286,11 +288,29 @@ class DisconnectPopup(Popup):
 
 
 class ErrorPopup(Popup):
+
     def btn(self):
         TestWindow.c = 0
         app = MyMainApp.get_running_app()
         app.root.current = "main"
         app.root.transition.direction = "right"
+        client_main.stop_sign = 0
+
+    def resume(self):
+        loading = my_app.sm.get_screen("loading")
+        client_main.stop_sign = 0
+        client_main.send_data("START")
+        print(client_main.get_data())
+        sleep(0.5)
+        self.data = MainWindow.seat_height
+        client_main.send_data(str(self.data))
+        loading.check = Thread(target=client_main.check_response)
+        loading.check.start()
+        loading.interval = Clock.schedule_interval(loading.auto_switch, 1.0)
+
+        return 0
+
+        pass
 
     pass
 
@@ -306,7 +326,6 @@ class MovingPopup(Popup):  # Popup when the seat is moving in loading screen
 class CautionPopup(Popup):  # Popup when leaving loading test
     def btn(self):
         loading = my_app.sm.get_screen("loading")
-        loading.ids.load_button.disabled = True
         TestWindow.c = 0
         app = MyMainApp.get_running_app()
         app.root.current = "main"
@@ -318,7 +337,7 @@ class CautionPopup(Popup):  # Popup when leaving loading test
 class PracticePopup(Popup):
     def btn(self):
         loading = my_app.sm.get_screen("loading")
-        loading.ids.load_button.disabled = True
+
         app = MyMainApp.get_running_app()
         app.root.current = "main"
         app.root.transition.direction = "right"
@@ -740,39 +759,41 @@ class LoadingWindow(Screen):  # incomplete
 
     def __init__(self, **kw):
         super(LoadingWindow, self).__init__(**kw)
-
+        self.check = 0
         self.response = 0
         self.tmp = 0
         self.load = None
         self.stop_loading = 0
+        self.interval = None
 
     def popup_parent(self):
         loading = self.manager.get_screen("loading")
-        if loading.ids.load_button.disabled:
-            Factory.MovingPopup().open()
-        else:
-            Factory.CautionPopup().open()
+        Factory.CautionPopup().open()
 
     def stop_signal(self, dt):  # If dead, stop program return to menu
-        if client_main.stop_sign == 1:
+        if client_main.error_flag == 0:
             pass
         else:
             Factory.ErrorPopup().open()
-
-            client_main.stop_sign = 1
+            Clock.unschedule(self.interval)
+            client_main.error_flag = 0
             pass
 
     def on_leave(self):
         self.stop_loading = 1
         sleep(0.5)
+        Clock.unschedule(self.interval)
         self.stop_loading = 0
 
     def on_enter(self):
-        self.load = Thread(target=self.loading)
-        self.load.start()
-        check = Thread(target=client_main.check_response)
-        check.start()
+
+        self.check = Thread(target=client_main.check_response)
+        self.check.start()
+        Thread(target=self.loading).start()
+
         Clock.schedule_interval(self.stop_signal, 1.0)
+        sleep(1)
+        self.interval = Clock.schedule_interval(self.auto_switch, 1.0)
 
     def loading(self, *kwargs):
         if self.stop_loading == 1:
@@ -787,13 +808,21 @@ class LoadingWindow(Screen):  # incomplete
             anim.bind(on_complete=self.loading)
             anim.start(loading_grid)
 
-    def disable_load_button(self):
-        load_screen = self.manager.get_screen("loading")
+    def auto_switch(self, dt):
+        if not self.check.is_alive():  # Check for if the check_response thread is dead or not
+            if client_main.error_flag == 1:
+                client_main.error_flag = 0
+                Clock.unschedule(self.interval)
+                self.stop_loading = 1
+                sleep(0.5)
+                self.stop_loading = 0
+                return 0
 
-        load_screen.ids.load_button.disabled = True
-
-    def kill_load(self):
-        self.load.terminate()
+            else:
+                print("Done")
+                self.switch()
+                Clock.unschedule(self.interval)
+            return 0
 
     def home(self):
         self.manager.current = "main"

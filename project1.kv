@@ -1,22 +1,13 @@
 <WindowManager>:
     AddressScreen:
     ExplanationWindow:
-
-
     PracticeWindow:
     LoadingWindow:
     ResultWindow:
-
-
     TestWindow:
-
-
-
     MaintenanceWindow:
-
     TitleWindow:
     MainWindow:
-
     ConnectionWindow:
 
 
@@ -129,13 +120,24 @@
             text : "エラーが発生しました、メイン画面に戻ります。"
             font_size : self.height/7
             halign : "center"
-        MDRectangleFlatButton:
-            text : "閉じる"
-            size_hint_x : 1
-            halign : "center"
-            on_release :
-                root.btn()
-                root.dismiss()
+        MDGridLayout
+            rows :1
+            cols : 2
+            padding :"20dp"
+            MDRectangleFlatButton:
+                text : "閉じる"
+                size_hint_x : 1
+                halign : "center"
+                on_release :
+                    root.btn()
+                    root.dismiss()
+            MDRectangleFlatButton:
+                text : "再開"
+                size_hint_x : 1
+                halign : "center"
+                on_release :
+                    root.resume()
+                    root.dismiss()
 
 
 <LoadingPopup>
@@ -339,33 +341,32 @@
 
             pos_hint:{"center_x" : 0.5 , "center_y" : 0.5}
             padding : "20dp"
-
-            size_hint_y:0.4
+            size_hint_y:0.5
             size_hint_x:0.8
             column:1
             rows:4
             MDLabel :
-                font_size : "19dp"
+                font_size : self.width/20
                 size_hint_x:1
                 halign :"left"
                 text : "接続ガイドライン。"
                 color : "#000000"
                 underline :True
             MDLabel :
-                font_size : "19dp"
+                font_size : self.width/20
                 size_hint_x:1
                 color : "#000000"
                 halign :"left"
                 text : "1.Wifi設定を開いて「Raspi」と接続してください. パスワード：raspberrypi"
             MDLabel :
-                font_size : "19dp"
+                font_size :self.width/20
                 size_hint_x:1
                 halign :"left"
                 theme_text_color: "Custom"
                 text_color: "red"
                 text : "注意：「Raspi」と接続後、インターネット接続が使用できなくなりますご承知おきください　"
             MDLabel :
-                font_size : "19dp"
+                font_size : self.width/20
                 size_hint_x:1
                 halign :"left"
                 theme_text_color: "Custom"
@@ -603,9 +604,9 @@
         id : test2_label
         pos_hint : {"center_x" : 0.5 , "center_y" : 0.40}
         halign: "center"
-        size_hint_x :1
+        size_hint_x :0.9
         text :"Under Construction"
-        font_size : "19dp"
+        font_size : self.width/24
         color : "#000000"
 
     Image :
@@ -613,7 +614,9 @@
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
         size_hint_x : 0.5
-        size_hint_y  : 0.3
+        size_hint_y  : 1.0
+        size : self.texture_size
+        fit_mode :"fill"
     MDRectangleFlatButton:
         text : "成功"
         font_size : "20dp"
@@ -977,8 +980,8 @@
             rows:2
             cols:2
             size_hint: None,None
-            height:100
-            width:100
+            height:"200dp"
+            width:"200dp"
             pos_hint:{"center_x":.5,"center_y":.6}
             spacing:5
             canvas.before:
@@ -1006,24 +1009,14 @@
     MDLabel :
         id:loading_label
         text : "座面高さ調整中.\n座ったままお待ちください."
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.35}
+        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
         halign :"center"
         size_hint_x :1
         color :"#000000"
-        font_size : "22dp"
+        font_size : self.width/24
 
 
 
-    MDRectangleFlatIconButton :
-
-        id : load_button
-        icon:"arrow-right"
-        text : "Proceed"
-        pos_hint : {"center_x" : 0.5 , "center_y" : 0.25}
-        disabled : True
-        on_release :
-            root.disable_load_button()
-            root.switch()
 
     MDTopAppBar:
         left_action_items: [['home', lambda x: root.popup_parent()]]
