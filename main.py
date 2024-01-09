@@ -601,12 +601,13 @@ class TestWindow(Screen):
             result_screen = self.manager.get_screen("result")
             if self.rating < -20:
 
+
                 result_screen.ids.result_label_comment.text = C[self.cnt]
-                result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+
 
             else:
                 result_screen.ids.result_label_comment.text = C[self.cnt]
-                result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(test_array[MainWindow.nt][3])}'
+                result_screen.ids.result_label_rage.text = f'貴殿のロコモ年齢は :{str(round(test_array[MainWindow.nt][3]))}'
 
         pass
 

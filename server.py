@@ -65,7 +65,7 @@ def server(response, comm):
     serversocket = socket.socket()
 
     SERVER_ADDRESS = ("localhost", 8000)
-    serversocket.bind(SERVER_ADDRESS)
+    serversocket.bind(("localhost", 8000))
 
     serversocket.listen(5)
 
