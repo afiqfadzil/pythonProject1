@@ -1,10 +1,13 @@
 <WindowManager>:
     AddressScreen:
-    ExplanationWindow:
     PracticeWindow:
+    TestWindow:
+
+    ExplanationWindow:
+
     LoadingWindow:
     ResultWindow:
-    TestWindow:
+
     MaintenanceWindow:
     TitleWindow:
     MainWindow:
@@ -280,9 +283,9 @@
         id : practice_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
-        size_hint_x : 0.5
-        size_hint_y  : 0.5
-        height :"60dp"
+        size_hint_x : 0.15
+        size_hint_y  : 0.3
+        size : self.texture_size
     MDRectangleFlatButton:
         text : "練習を終了"
         font_size : "20dp"
@@ -613,8 +616,8 @@
         id : test_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
-        size_hint_x : 0.5
-        size_hint_y  : 1.0
+        size_hint_x : 0.15
+        size_hint_y  : 0.3
         size : self.texture_size
         fit_mode :"fill"
     MDRectangleFlatButton:
