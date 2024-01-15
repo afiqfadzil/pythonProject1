@@ -333,7 +333,10 @@ class CautionPopup(Popup):  # Popup when leaving loading test
 
     pass
 
-
+class MaxPopup(Popup):
+    pass
+class MinPopup(Popup):
+    pass
 class PracticePopup(Popup):
     def btn(self):
         loading = my_app.sm.get_screen("loading")
@@ -601,7 +604,6 @@ class TestWindow(Screen):
             result_screen = self.manager.get_screen("result")
             if self.rating < -20:
 
-
                 result_screen.ids.result_label_comment.text = C[self.cnt]
 
 
@@ -633,6 +635,18 @@ class TestWindow(Screen):
 
         pass
 
+    def min_result(self):  # called when n = 14
+        Factory.CautionPopup().open()
+        TestWindow.c = 3
+        self.rating_func()
+        pass
+
+    def max_result(self): # called when n = 1
+        Factory.CautionPopup().open()
+        TestWindow.c = 3
+        self.rating_func()
+        pass
+
     def passed(self):
         if TestWindow.c < 3:
             if TestWindow.c < 3:
@@ -643,18 +657,23 @@ class TestWindow(Screen):
 
                     if MainWindow.nt < 1:
                         MainWindow.nt = 1
+                        self.max_result()
+
+
 
 
                 elif TestWindow.c == 1 and int(self.prev) == 0:  # PassPass
                     MainWindow.nt = MainWindow.nt - 2
                     if MainWindow.nt < 1:
                         MainWindow.nt = 1
+                        self.max_result()
 
 
                 elif TestWindow.c == 1 and int(self.prev) == 1:  # FailPass
                     MainWindow.nt = MainWindow.nt - 1
                     if MainWindow.nt < 1:
                         MainWindow.nt = 1
+                        self.max_result()
 
             if TestWindow.c == 2:  # FinalMarking
                 self.rating = float(test_array[MainWindow.nt][3]) - float(MainWindow.age)
@@ -701,16 +720,20 @@ class TestWindow(Screen):
                     MainWindow.nt = MainWindow.nt + 2
                     if MainWindow.nt > 14:
                         MainWindow.nt = 14
+                        self.min_result()
+                        return 
 
                 elif TestWindow.c == 1 and int(self.prev) == 1:  # FailFail
                     MainWindow.nt = MainWindow.nt + 2
                     if MainWindow.nt > 14:
                         MainWindow.nt = 14
+                        self.min_result()
 
                 elif TestWindow.c == 1 and int(self.prev) == 0:  # PassFail
                     MainWindow.nt = MainWindow.nt + 1
                     if MainWindow.nt > 14:
                         MainWindow.nt = 14
+                        self.min_result()
 
             if TestWindow.c == 2:  # FinalMarking
                 MainWindow.nt = MainWindow.nt + 1

@@ -277,15 +277,16 @@
         color : "#000000"
         size_hint_x :1
         text :"Under Construction"
-        font_size : "25dp"
+        font_size : self.width/23
 
     Image :
         id : practice_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
-        size_hint_x : 0.15
+        size_hint_x : 0.3
         size_hint_y  : 0.3
         size : self.texture_size
+        fit_mode :"fill"
     MDRectangleFlatButton:
         text : "練習を終了"
         font_size : "20dp"
@@ -616,7 +617,7 @@
         id : test_image
         source : 'assets/two_leg.png'
         pos_hint :{"center_x" : 0.5, "center_y" : 0.6 }
-        size_hint_x : 0.15
+        size_hint_x : 0.3
         size_hint_y  : 0.3
         size : self.texture_size
         fit_mode :"fill"
